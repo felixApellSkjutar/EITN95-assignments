@@ -5,7 +5,7 @@ class State extends GlobalSimulation{
 	
 	// Here follows the state variables and other variables that might be needed
 	// e.g. for measurements
-	public int numberInQueue = 0, accumulated = 0, noMeasurements = 0;
+	public int numberInQueue = 0, accumulated = 0, noMeasurements = 0, numberInQueue2 = 0, accumulated2 = 0, noMeasurements2 = 0;
 
 	Random slump = new Random(); // This is just a random number generator
 	
@@ -23,6 +23,15 @@ class State extends GlobalSimulation{
 			case MEASURE:
 				measure();
 				break;
+			case ARRIVAL2:
+				arrival2();
+				break;
+			case READY2:
+				ready2();
+				break;
+			case MEASURE2:
+				measure2();
+				break;
 		}
 	}
 	
@@ -32,21 +41,50 @@ class State extends GlobalSimulation{
 	// things are getting more complicated than this.
 	
 	private void arrival(){
-		if (numberInQueue == 0)
-			insertEvent(READY, time + 2*slump.nextDouble());
-		numberInQueue++;
-		insertEvent(ARRIVAL, time + 2.5*slump.nextDouble());
+		if(numberInQueue < 10) {
+			if (numberInQueue == 0)
+				insertEvent(READY, time + expDist(2.1));
+			numberInQueue++;
+			//Task1: Arrival konstant
+			double arrivalTime = 1; //Changee this to change arrival time to Q1
+			//insertEvent(ARRIVAL, time + 2.5*slump.nextDouble());
+			insertEvent(ARRIVAL, time + arrivalTime);
+		}
 	}
 	
 	private void ready(){
 		numberInQueue--;
+		insertEvent(ARRIVAL2, time);
 		if (numberInQueue > 0)
-			insertEvent(READY, time + 2*slump.nextDouble());
+			insertEvent(READY, time + expDist(2.1));
 	}
 	
 	private void measure(){
 		accumulated = accumulated + numberInQueue;
 		noMeasurements++;
 		insertEvent(MEASURE, time + slump.nextDouble()*10);
+	}
+
+	private void arrival2() {
+		if (numberInQueue2 == 0)
+			insertEvent(READY2, time + 2);
+		numberInQueue2++;
+	}
+
+	private void ready2(){
+		numberInQueue2--;
+		if (numberInQueue2 > 0)
+			insertEvent(READY2, time + 2);
+	}
+
+	private void measure2(){
+		accumulated2 = accumulated2 + numberInQueue2;
+		noMeasurements2++;
+		insertEvent(MEASURE2, time + expDist(5));
+	}
+
+	private double  expDist(double lambda) {
+		double u = slump.nextDouble();
+		return (Math.log(1 - u)/(-lambda));
 	}
 }
