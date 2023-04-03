@@ -41,15 +41,17 @@ class State extends GlobalSimulation{
 	// things are getting more complicated than this.
 	
 	private void arrival(){
+		//Task1: Arrival konstant
+		double arrivalTime = 1; //Changee this to change arrival time to Q1
 		if(numberInQueue < 10) {
 			if (numberInQueue == 0)
 				insertEvent(READY, time + expDist(2.1));
 			numberInQueue++;
-			//Task1: Arrival konstant
-			double arrivalTime = 1; //Changee this to change arrival time to Q1
 			//insertEvent(ARRIVAL, time + 2.5*slump.nextDouble());
-			insertEvent(ARRIVAL, time + arrivalTime);
+		} else {
+			//System.out.println("REJECT!");
 		}
+		insertEvent(ARRIVAL, time + arrivalTime);
 	}
 	
 	private void ready(){
@@ -85,6 +87,6 @@ class State extends GlobalSimulation{
 
 	private double  expDist(double lambda) {
 		double u = slump.nextDouble();
-		return (Math.log(1 - u)/(-lambda));
+		return (Math.log(1 - u)*(-lambda));
 	}
 }
