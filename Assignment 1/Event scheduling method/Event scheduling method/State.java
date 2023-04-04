@@ -5,8 +5,7 @@ class State extends GlobalSimulation{
 	
 	// Here follows the state variables and other variables that might be needed
 	// e.g. for measurements
-	public int numberInQueue = 0, accumulated = 0, noMeasurements = 0, numberInQueue2 = 0, accumulated2 = 0, noMeasurements2 = 0;
-
+	public int numberInQueue = 0, accumulated = 0, noMeasurements = 0, numberInQueue2 = 0, accumulated2 = 0, noMeasurements2 = 0, noReject1 = 0, noCustomers1 = 0;
 	Random slump = new Random(); // This is just a random number generator
 	
 	
@@ -42,18 +41,18 @@ class State extends GlobalSimulation{
 	
 	private void arrival(){
 		//Task1: Arrival konstant
-		double arrivalTime = 1; //Changee this to change arrival time to Q1
+		double arrivalTime = 5; //Change this to change arrival time to Q1
 		if(numberInQueue < 10) {
 			if (numberInQueue == 0)
 				insertEvent(READY, time + expDist(2.1));
 			numberInQueue++;
-			//insertEvent(ARRIVAL, time + 2.5*slump.nextDouble());
+			noCustomers1++;
 		} else {
-			//System.out.println("REJECT!");
+			noReject1++;
 		}
 		insertEvent(ARRIVAL, time + arrivalTime);
 	}
-	
+
 	private void ready(){
 		numberInQueue--;
 		insertEvent(ARRIVAL2, time);
@@ -67,7 +66,7 @@ class State extends GlobalSimulation{
 		insertEvent(MEASURE, time + slump.nextDouble()*10);
 	}
 
-	private void arrival2() {
+	private void arrival2(){
 		if (numberInQueue2 == 0)
 			insertEvent(READY2, time + 2);
 		numberInQueue2++;
@@ -85,8 +84,8 @@ class State extends GlobalSimulation{
 		insertEvent(MEASURE2, time + expDist(5));
 	}
 
-	private double  expDist(double lambda) {
+	private double  expDist(double mean) {
 		double u = slump.nextDouble();
-		return (Math.log(1 - u)*(-lambda));
+		return (Math.log(1 - u)*(-mean));
 	}
 }
