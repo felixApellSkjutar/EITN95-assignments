@@ -1,7 +1,7 @@
 import java.util.*;
 import java.io.*;
 
-//Denna klass ärver Global så att man kan använda time och signalnamnen utan punktnotation
+//Denna klass ï¿½rver Global sï¿½ att man kan anvï¿½nda time och signalnamnen utan punktnotation
 //It inherits Proc so that we can use time and the signal names without dot notation
 
 
@@ -9,34 +9,45 @@ public class MainSimulation extends Global{
 
     public static void main(String[] args) throws IOException {
 
-    	//Signallistan startas och actSignal deklareras. actSignal är den senast utplockade signalen i huvudloopen nedan.
+    	//Signallistan startas och actSignal deklareras. actSignal ï¿½r den senast utplockade signalen i huvudloopen nedan.
     	// The signal list is started and actSignal is declaree. actSignal is the latest signal that has been fetched from the 
     	// signal list in the main loop below.
 
     	Signal actSignal;
     	new SignalList();
 
-    	//Här nedan skapas de processinstanser som behövs och parametrar i dem ges värden.
+    	//Hï¿½r nedan skapas de processinstanser som behï¿½vs och parametrar i dem ges vï¿½rden.
     	// Here process instances are created (two queues and one generator) and their parameters are given values. 
 
     	QS Q1 = new QS();
     	Q1.sendTo = null;
 
     	Gen Generator = new Gen();
-    	Generator.lambda = 9; //Generator ska generera nio kunder per sekund  //Generator shall generate 9 customers per second
-    	Generator.sendTo = Q1; //De genererade kunderna ska skickas till kösystemet QS  // The generated customers shall be sent to Q1
+    	Generator.lambda = 5; //Generator ska generera en kund var femte minut
+    	Generator.sendTo = Q1; //De genererade kunderna ska skickas till kï¿½systemet QS
 
-    	//Här nedan skickas de första signalerna för att simuleringen ska komma igång.
+		//Gen och QS Ã¤rver bÃ¥da frÃ¥n Proc - process.
+		//Gen genererar kunder 
+		//metoden treatSignal() hanterar den generearde kunden
+		//en switch sats som lÃ¤gger in en Arrival vid tidpunkten den genereras samt en READY vid tidpunkten dÃ¥
+		//kunden blivit hanterad av en server.
+
+		//QS
+		//SjÃ¤lva kÃ¶n - rÃ¤knar hur mÃ¥nga som stÃ¥r i kÃ¶n, accumulated etc.
+		//sendto - var kunden som hanterats ska skickas
+
+
+    	//Hï¿½r nedan skickas de fï¿½rsta signalerna fï¿½r att simuleringen ska komma igï¿½ng.
     	//To start the simulation the first signals are put in the signal list
 
     	SignalList.SendSignal(READY, Generator, time);
     	SignalList.SendSignal(MEASURE, Q1, time);
 
 
-    	// Detta är simuleringsloopen:
+    	// Detta ï¿½r simuleringsloopen:
     	// This is the main loop
 
-    	while (time < 100000){
+    	while ((Q1.totalArrivedNormal + Q1.totalArrivedSpecial) < 10000){
     		actSignal = SignalList.FetchSignal();
     		time = actSignal.arrivalTime;
     		actSignal.destination.TreatSignal(actSignal);
@@ -45,7 +56,20 @@ public class MainSimulation extends Global{
     	//Slutligen skrivs resultatet av simuleringen ut nedan:
     	//Finally the result of the simulation is printed below:
 
-    	System.out.println("Mean number of customers in queuing system: " + 1.0*Q1.accumulated/Q1.noMeasurements);
+//    	System.out.println("Mean number of customers in queuing system: " + 1.0*Q1.accumulated/Q1.nmbrMeasurements);
+
+		System.out.println("Time:" + time);
+		System.out.println("Mean number of customers in queuing system: " + 1.0*Q1.accumulated/Q1.nmbrMeasurements);
+		System.out.println("Total handeled: " + (Q1.totalHandeledNormal + Q1.totalHandeledSpecial));
+		System.out.println("------------------------------------------------------");
+		System.out.println("Total number of normal customers arrived: " + Q1.totalArrivedNormal);
+		System.out.println("Total number of normal customers left: " + Q1.totalHandeledNormal);
+		System.out.println("------------------------------------------------------");
+		System.out.println("Total number of special customers arrived: " + Q1.totalArrivedSpecial);
+		System.out.println("Total number of special customers left: " + Q1.totalHandeledSpecial);
+		System.out.println("------------------------------------------------------");
+		System.out.println("Average queuing time normal: " + (1.0*Q1.totalArrivedNormal - 1.0*Q1.totalHandeledNormal)/time);
+		System.out.println("Average queuing time special: " + (1.0*Q1.totalArrivedSpecial - 1.0*Q1.totalHandeledSpecial)/time);
 
     }
 }

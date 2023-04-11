@@ -1,5 +1,5 @@
-// Denna klass definierar signallistan. Om man vill skicka mer information i signalen �n minimum, s� kan
-// man skriva ytterligare variante av SendSignal som inneh�ller fler parametrar.
+// Denna klass definierar signallistan. Om man vill skicka mer information i signalen �n minimum, s� kan
+// man skriva ytterligare variante av SendSignal som inneh�ller fler parametrar.
 
 // This class defines the signal list. If one wants to send more information than here,
 // one can add the extra information in the Signal class and write an extra sendSignal method 
@@ -25,6 +25,10 @@ public class SignalList{
  	while ((dummy.arrivalTime < newSignal.arrivalTime) & (dummy != last)){
  		predummy = dummy;
  		dummy = dummy.next;
+		//Eftersom last är en hittepå så funkar det
+		//När dummy är last så står vi i slitet av listan och eftersom last inte ska genomföras så 
+		//kan vi placers newSignal före den, den blir sist då.
+		//Det här är en ganska strulig lösnins, varför inte bara en vanlig länkad lista?
  	}
  	predummy.next = newSignal;
  	newSignal.next = dummy;
@@ -36,5 +40,16 @@ public class SignalList{
 		list.next = dummy.next;
 		dummy.next = null;
 		return dummy;
+	}
+
+	public static double peekArrivalTime(int signalType){
+		Signal predummy, dummy;
+		predummy = list;
+		dummy = predummy.next;
+		while(dummy.signalType != signalType) {
+			predummy = dummy;
+			dummy = dummy.next;
+		}
+		return dummy.arrivalTime;
 	}
 }
