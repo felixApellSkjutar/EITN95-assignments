@@ -68,8 +68,10 @@ public class MainSimulation extends Global{
 		System.out.println("Total number of special customers arrived: " + Q1.totalArrivedSpecial);
 		System.out.println("Total number of special customers left: " + Q1.totalHandeledSpecial);
 		System.out.println("------------------------------------------------------");
-		System.out.println("Average queuing time normal: " + (1.0*Q1.totalArrivedNormal - 1.0*Q1.totalHandeledNormal)/time);
-		System.out.println("Average queuing time special: " + (1.0*Q1.totalArrivedSpecial - 1.0*Q1.totalHandeledSpecial)/time);
+		//System.out.println("Average queuing time normal: " + (1.0*Q1.totalArrivedNormal - 1.0*Q1.totalHandeledNormal)/time);
+		//System.out.println("Average queuing time special: " + (1.0*Q1.totalArrivedSpecial - 1.0*Q1.totalHandeledSpecial)/time);
+		System.out.println("Average queuing time normal: " + (Q1.normalAccQuetime)/Q1.totalHandeledNormal);
+		System.out.println("Average queuing time special: " + (Q1.specialAccQuetime)/Q1.totalHandeledSpecial);
 
     }
 }
