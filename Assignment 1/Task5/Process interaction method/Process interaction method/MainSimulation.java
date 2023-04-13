@@ -31,8 +31,7 @@ public class MainSimulation extends Global{
     	Q5.sendTo = null;
 
     	Gen Generator = new Gen();
-    	Generator.lambda = 1/0.5; //Generator ska generera nio kunder per sekund  //Generator shall generate 9 customers per second
-    	// Generator.sendTo = Q1; //De genererade kunderna ska skickas till k�systemet QS  // The generated customers shall be sent to Q1
+    	Generator.lambda = 1/2;
 		Generator.sendToList = new ArrayList<QS>(Arrays.asList(Q1, Q2, Q3, Q4, Q5));
     	
 		//H�r nedan skickas de f�rsta signalerna f�r att simuleringen ska komma ig�ng.
@@ -58,11 +57,11 @@ public class MainSimulation extends Global{
     	//Slutligen skrivs resultatet av simuleringen ut nedan:
     	//Finally the result of the simulation is printed below:
 
-    	System.out.println("Mean number of customers in queuing system 1: " + 1.0*Q1.accumulated/Q1.noMeasurements);
-		System.out.println("Mean number of customers in queuing system 2: " + 1.0*Q2.accumulated/Q2.noMeasurements);
-		System.out.println("Mean number of customers in queuing system 3: " + 1.0*Q3.accumulated/Q3.noMeasurements);
-		System.out.println("Mean number of customers in queuing system 4: " + 1.0*Q4.accumulated/Q4.noMeasurements);
-		System.out.println("Mean number of customers in queuing system 5: " + 1.0*Q5.accumulated/Q5.noMeasurements);
-		System.out.println("Mean number of customers in queuing system total: " + 1.0*(Q1.accumulated+Q2.accumulated+Q3.accumulated+Q4.accumulated+Q5.accumulated)/(Q1.noMeasurements+Q2.noMeasurements+Q3.noMeasurements+Q4.noMeasurements+Q5.noMeasurements));
+    	System.out.println("Mean nmbr customers sys 1: " + 1.0*Q1.accumulated/Q1.noMeasurements);
+		System.out.println("Mean nmbr customers sys 2: " + 1.0*Q2.accumulated/Q2.noMeasurements);
+		System.out.println("Mean nmbr customers sys 3: " + 1.0*Q3.accumulated/Q3.noMeasurements);
+		System.out.println("Mean nmbr customers sys 4: " + 1.0*Q4.accumulated/Q4.noMeasurements);
+		System.out.println("Mean nmbr customers sys 5: " + 1.0*Q5.accumulated/Q5.noMeasurements);
+		System.out.println("Mean nmbr customers total: " + 1.0*(Q1.accumulated+Q2.accumulated+Q3.accumulated+Q4.accumulated+Q5.accumulated)/(Q1.noMeasurements+Q2.noMeasurements+Q3.noMeasurements+Q4.noMeasurements+Q5.noMeasurements));
     }
 }
