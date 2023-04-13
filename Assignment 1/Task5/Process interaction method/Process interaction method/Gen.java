@@ -1,7 +1,7 @@
 import java.util.*;
 import java.io.*;
 
-//Denna klass ärver Proc, det gör att man kan använda time och signalnamn utan punktnotation
+//Denna klass ï¿½rver Proc, det gï¿½r att man kan anvï¿½nda time och signalnamn utan punktnotation
 //It inherits Proc so that we can use time and the signal names without dot notation 
 
 class Gen extends Proc{
@@ -10,18 +10,56 @@ class Gen extends Proc{
 	//The random number generator is started:
 	Random slump = new Random();
 
-	//Generatorn har två parametrar:
+	//Generatorn har tvï¿½ parametrar:
 	//There are two parameters:
+	public List<QS> sendToList = new ArrayList<QS>();
 	public Proc sendTo;    //Anger till vilken process de genererade kunderna ska skickas //Where to send customers
-	public double lambda;  //Hur många per sekund som ska generas //How many to generate per second
+	public double lambda;  //Hur mï¿½nga per sekund som ska generas //How many to generate per second
+	private Iterator<QS> it = sendToList.iterator();
 
-	//Här nedan anger man vad som ska göras när en signal kommer //What to do when a signal arrives
+	//Hï¿½r nedan anger man vad som ska gï¿½ras nï¿½r en signal kommer //What to do when a signal arrives
 	public void TreatSignal(Signal x){
 		switch (x.signalType){
 			case READY:{
+				sendTo = nextQueue();
 				SignalList.SendSignal(ARRIVAL, sendTo, time);
 				SignalList.SendSignal(READY, this, time + (2.0/lambda)*slump.nextDouble());}
 				break;
 		}
+	}
+
+	private Proc nextQueue() {
+		return smartDispatch();
+	}
+
+	private Proc randomDispatch() {
+		int queue = slump.nextInt(5);
+		return sendToList.get(queue);
+	}
+
+	private Proc roundRobinDispatch() {
+		if (it.hasNext()) {
+			return it.next();
+		} else {
+			it = sendToList.iterator();
+			return it.next();
+		}
+	}
+
+	private Proc smartDispatch() {
+		int min = Integer.MAX_VALUE;
+		List<QS> tieBreakers = new ArrayList<QS>();
+		for(QS p : sendToList) {
+			if (p.numberInQueue < min){
+				min = p.numberInQueue;
+			}
+		}
+		for (QS p : sendToList) {
+			if (p.numberInQueue == min) {
+				tieBreakers.add(p);
+			}
+		}
+		int queue = slump.nextInt(tieBreakers.size());
+		return tieBreakers.get(queue);
 	}
 }

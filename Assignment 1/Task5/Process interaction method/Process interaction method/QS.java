@@ -14,7 +14,7 @@ class QS extends Proc{
 			case ARRIVAL:{
 				numberInQueue++;
 				if (numberInQueue == 1){
-					SignalList.SendSignal(READY,this, time + 0.2*slump.nextDouble());
+					SignalList.SendSignal(READY,this, time + expDist(0.5));
 				}
 			} break;
 
@@ -24,7 +24,7 @@ class QS extends Proc{
 					SignalList.SendSignal(ARRIVAL, sendTo, time);
 				}
 				if (numberInQueue > 0){
-					SignalList.SendSignal(READY, this, time + 0.2*slump.nextDouble());
+					SignalList.SendSignal(READY, this, time + expDist(0.5));
 				}
 			} break;
 
@@ -34,5 +34,10 @@ class QS extends Proc{
 				SignalList.SendSignal(MEASURE, this, time + 2*slump.nextDouble());
 			} break;
 		}
+	}
+
+	private double  expDist(double mean) {
+		double u = slump.nextDouble();
+		return (Math.log(1 - u)*(-mean));
 	}
 }

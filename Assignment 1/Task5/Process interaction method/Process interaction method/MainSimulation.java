@@ -1,7 +1,7 @@
 import java.util.*;
 import java.io.*;
 
-//Denna klass ärver Global så att man kan använda time och signalnamnen utan punktnotation
+//Denna klass ï¿½rver Global sï¿½ att man kan anvï¿½nda time och signalnamnen utan punktnotation
 //It inherits Proc so that we can use time and the signal names without dot notation
 
 
@@ -9,31 +9,44 @@ public class MainSimulation extends Global{
 
     public static void main(String[] args) throws IOException {
 
-    	//Signallistan startas och actSignal deklareras. actSignal är den senast utplockade signalen i huvudloopen nedan.
+    	//Signallistan startas och actSignal deklareras. actSignal ï¿½r den senast utplockade signalen i huvudloopen nedan.
     	// The signal list is started and actSignal is declaree. actSignal is the latest signal that has been fetched from the 
     	// signal list in the main loop below.
 
     	Signal actSignal;
     	new SignalList();
 
-    	//Här nedan skapas de processinstanser som behövs och parametrar i dem ges värden.
+    	//Hï¿½r nedan skapas de processinstanser som behï¿½vs och parametrar i dem ges vï¿½rden.
     	// Here process instances are created (two queues and one generator) and their parameters are given values. 
 
     	QS Q1 = new QS();
     	Q1.sendTo = null;
+		QS Q2 = new QS();
+    	Q2.sendTo = null;
+		QS Q3 = new QS();
+    	Q3.sendTo = null;
+		QS Q4 = new QS();
+    	Q4.sendTo = null;
+		QS Q5 = new QS();
+    	Q5.sendTo = null;
 
     	Gen Generator = new Gen();
-    	Generator.lambda = 9; //Generator ska generera nio kunder per sekund  //Generator shall generate 9 customers per second
-    	Generator.sendTo = Q1; //De genererade kunderna ska skickas till kösystemet QS  // The generated customers shall be sent to Q1
-
-    	//Här nedan skickas de första signalerna för att simuleringen ska komma igång.
+    	Generator.lambda = 1/0.5; //Generator ska generera nio kunder per sekund  //Generator shall generate 9 customers per second
+    	// Generator.sendTo = Q1; //De genererade kunderna ska skickas till kï¿½systemet QS  // The generated customers shall be sent to Q1
+		Generator.sendToList = new ArrayList<QS>(Arrays.asList(Q1, Q2, Q3, Q4, Q5));
+    	
+		//Hï¿½r nedan skickas de fï¿½rsta signalerna fï¿½r att simuleringen ska komma igï¿½ng.
     	//To start the simulation the first signals are put in the signal list
 
     	SignalList.SendSignal(READY, Generator, time);
     	SignalList.SendSignal(MEASURE, Q1, time);
+		SignalList.SendSignal(MEASURE, Q2, time);
+		SignalList.SendSignal(MEASURE, Q3, time);
+		SignalList.SendSignal(MEASURE, Q4, time);
+		SignalList.SendSignal(MEASURE, Q5, time);
 
 
-    	// Detta är simuleringsloopen:
+    	// Detta ï¿½r simuleringsloopen:
     	// This is the main loop
 
     	while (time < 100000){
@@ -45,7 +58,11 @@ public class MainSimulation extends Global{
     	//Slutligen skrivs resultatet av simuleringen ut nedan:
     	//Finally the result of the simulation is printed below:
 
-    	System.out.println("Mean number of customers in queuing system: " + 1.0*Q1.accumulated/Q1.noMeasurements);
-
+    	System.out.println("Mean number of customers in queuing system 1: " + 1.0*Q1.accumulated/Q1.noMeasurements);
+		System.out.println("Mean number of customers in queuing system 2: " + 1.0*Q2.accumulated/Q2.noMeasurements);
+		System.out.println("Mean number of customers in queuing system 3: " + 1.0*Q3.accumulated/Q3.noMeasurements);
+		System.out.println("Mean number of customers in queuing system 4: " + 1.0*Q4.accumulated/Q4.noMeasurements);
+		System.out.println("Mean number of customers in queuing system 5: " + 1.0*Q5.accumulated/Q5.noMeasurements);
+		System.out.println("Mean number of customers in queuing system total: " + 1.0*(Q1.accumulated+Q2.accumulated+Q3.accumulated+Q4.accumulated+Q5.accumulated)/(Q1.noMeasurements+Q2.noMeasurements+Q3.noMeasurements+Q4.noMeasurements+Q5.noMeasurements));
     }
 }
