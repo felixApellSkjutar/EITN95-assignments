@@ -5,7 +5,8 @@ public class GlobalSimulation{
 	// for insertion of events in the event list. That is just for making the code in
 	// MainSimulation.java and State.java simpler (no dot notation is needed).
 	
-	public static final int ARRIVAL = 1, READY = 2, MEASURE = 3, ARRIVAL2 = 4, READY2 = 5, MEASURE2 = 6; // The events, add or remove if needed!
+	// The events, add or remove if needed!
+	public static final int COMPONENT1 = 0, COMPONENT2 = 1, COMPONENT3 = 2, COMPONENT4 = 3, COMPONENT5 = 4, MEASURE = 5, ARRIVAL = 6; 
 	public static double time = 0; // The global time variable
 	public static EventListClass eventList = new EventListClass(); // The event list used in the program
 	public static void insertEvent(int type, double TimeOfEvent){  // Just to be able to skip dot notation
