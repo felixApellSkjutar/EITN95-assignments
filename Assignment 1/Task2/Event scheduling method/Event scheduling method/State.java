@@ -9,8 +9,9 @@ class State extends GlobalSimulation{
 	public double lambda = 150;
 	public double serviceTimeA = 0.002; 	// XA in task
 	public double serviceTimeB = 0.004; 	// XA in task
-	public int d = 1; 						// delay
 	Random slump = new Random(); // This is just a random number generator
+	public int d = 1; 						// delay
+	//public double d = expDist(1); 						// delay
 	
 	
 	// The following method is called by the main program each time a new event has been fetched
@@ -56,10 +57,17 @@ class State extends GlobalSimulation{
 
 	private void readyA(){
 		numberInBufferA--;
-		if (numberInBufferB > 0)
+		// Prio B
+		/* if (numberInBufferB > 0)
 			insertEvent(READY_B, time + serviceTimeB);
 		else if(numberInBufferA > 0)
+			insertEvent(READY_A, time + serviceTimeA); */
+		//Prio A
+		if (numberInBufferA > 0)
 			insertEvent(READY_A, time + serviceTimeA);
+		else if(numberInBufferB > 0)
+			insertEvent(READY_B, time + serviceTimeB);
+		
 		insertEvent(ARRIVAL_B, time + d);
 	}
 	
@@ -77,10 +85,17 @@ class State extends GlobalSimulation{
 
 	private void readyB(){
 		numberInBufferB--;
-		if (numberInBufferB > 0)
+
+		//Prio B
+		/* if (numberInBufferB > 0)
 			insertEvent(READY_B, time + serviceTimeB);
 		else if(numberInBufferA > 0)
+			insertEvent(READY_A, time + serviceTimeA); */
+		// Prio A
+		if (numberInBufferA > 0)
 			insertEvent(READY_A, time + serviceTimeA);
+		else if(numberInBufferB > 0)
+			insertEvent(READY_B, time + serviceTimeB);
 	}
 
 	private void measureB(){
