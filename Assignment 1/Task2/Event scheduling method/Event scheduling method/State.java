@@ -58,6 +58,8 @@ class State extends GlobalSimulation{
 		numberInBufferA--;
 		if (numberInBufferB > 0)
 			insertEvent(READY_B, time + serviceTimeB);
+		else if(numberInBufferA > 0)
+			insertEvent(READY_A, time + serviceTimeA);
 		insertEvent(ARRIVAL_B, time + d);
 	}
 	
@@ -78,7 +80,7 @@ class State extends GlobalSimulation{
 		if (numberInBufferB > 0)
 			insertEvent(READY_B, time + serviceTimeB);
 		else if(numberInBufferA > 0)
-			insertEvent(ARRIVAL_A, time + serviceTimeA);
+			insertEvent(READY_A, time + serviceTimeA);
 	}
 
 	private void measureB(){
