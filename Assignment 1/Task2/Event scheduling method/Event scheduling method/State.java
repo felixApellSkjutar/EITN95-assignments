@@ -5,7 +5,11 @@ class State extends GlobalSimulation{
 	
 	// Here follows the state variables and other variables that might be needed
 	// e.g. for measurements
-	public int numberInQueue = 0, accumulated = 0, noMeasurements = 0, numberInQueue2 = 0, accumulated2 = 0, noMeasurements2 = 0, noReject1 = 0, noCustomers1 = 0;
+	public int numberInBufferA = 0, accumulated = 0, noMeasurements = 0, numberInBufferB = 0, accumulated2 = 0, noMeasurements2 = 0, noCustomers1 = 0;
+	public double lambda = 150;
+	public double serviceTimeA = 0.002; 	// XA in task
+	public double serviceTimeB = 0.004; 	// XA in task
+	public int d = 1; 						// delay
 	Random slump = new Random(); // This is just a random number generator
 	
 	
@@ -13,23 +17,23 @@ class State extends GlobalSimulation{
 	// from the event list in the main loop. 
 	public void treatEvent(Event x){
 		switch (x.eventType){
-			case ARRIVAL:
-				arrival();
+			case ARRIVAL_A:
+				arrivalA();
 				break;
-			case READY:
-				ready();
+			case READY_A:
+				readyA();
 				break;
-			case MEASURE:
-				measure();
+			case MEASURE_A:
+				measureA();
 				break;
-			case ARRIVAL2:
-				arrival2();
+			case ARRIVAL_B:
+				arrivalB();
 				break;
-			case READY2:
-				ready2();
+			case READY_B:
+				readyB();
 				break;
-			case MEASURE2:
-				measure2();
+			case MEASURE_B:
+				measureB();
 				break;
 		}
 	}
@@ -39,49 +43,48 @@ class State extends GlobalSimulation{
 	// have been placed in the case in treatEvent, but often it is simpler to write a method if 
 	// things are getting more complicated than this.
 	
-	private void arrival(){
-		//Task1: Arrival konstant
-		double arrivalTime = 5; //Change this to change arrival time to Q1
-		if(numberInQueue < 10) {
-			if (numberInQueue == 0)
-				insertEvent(READY, time + expDist(2.1));
-			numberInQueue++;
+	private void arrivalA(){
+		double arrivalTime = expDist(1.0*1/lambda);
+		// If there are nothing in BufferA or B -> move to serverA
+			if (numberInBufferA + numberInBufferB == 0)
+				insertEvent(READY_A, time + serviceTimeA);
+			numberInBufferA++;
 			noCustomers1++;
-		} else {
-			noReject1++;
-		}
-		insertEvent(ARRIVAL, time + arrivalTime);
+		
+		insertEvent(ARRIVAL_A, time + arrivalTime);
 	}
 
-	private void ready(){
-		numberInQueue--;
-		insertEvent(ARRIVAL2, time);
-		if (numberInQueue > 0)
-			insertEvent(READY, time + expDist(2.1));
+	private void readyA(){
+		numberInBufferA--;
+		if (numberInBufferB > 0)
+			insertEvent(READY_B, time + serviceTimeB);
+		insertEvent(ARRIVAL_B, time + d);
 	}
 	
-	private void measure(){
-		accumulated = accumulated + numberInQueue;
+	private void measureA(){
+		accumulated = accumulated + numberInBufferA;
 		noMeasurements++;
-		insertEvent(MEASURE, time + slump.nextDouble()*10);
+		insertEvent(MEASURE_A, time + 0.1);
 	}
 
-	private void arrival2(){
-		if (numberInQueue2 == 0)
-			insertEvent(READY2, time + 2);
-		numberInQueue2++;
+	private void arrivalB(){
+		if (numberInBufferB == 0)
+			insertEvent(READY_B, time + serviceTimeB);
+		numberInBufferB++;
 	}
 
-	private void ready2(){
-		numberInQueue2--;
-		if (numberInQueue2 > 0)
-			insertEvent(READY2, time + 2);
+	private void readyB(){
+		numberInBufferB--;
+		if (numberInBufferB > 0)
+			insertEvent(READY_B, time + serviceTimeB);
+		else if(numberInBufferA > 0)
+			insertEvent(ARRIVAL_A, time + serviceTimeA);
 	}
 
-	private void measure2(){
-		accumulated2 = accumulated2 + numberInQueue2;
+	private void measureB(){
+		accumulated2 = accumulated2 + numberInBufferB;
 		noMeasurements2++;
-		insertEvent(MEASURE2, time + expDist(5));
+		insertEvent(MEASURE_B, time + 0.1);
 	}
 
 	private double  expDist(double mean) {
