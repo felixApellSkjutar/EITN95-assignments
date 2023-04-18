@@ -5,10 +5,30 @@ class State extends GlobalSimulation{
 	
 	// Here follows the state variables and other variables that might be needed
 	// e.g. for measurements
-	public int numberInQueue = 0, accumulated = 0, noMeasurements = 0;
+	public int numberOfCustomers = 0, accumulated = 0, numberOfMeasurements = 0;
 
 	Random slump = new Random(); // This is just a random number generator
 	
+	private int N; 			// Number of parallell servers
+	private int x; 			// Service time of a customer in seconds
+	private double lambda; 	// Poisson process rate
+	private int T; 			// Time between measurements
+	private File file;		// File containing the measurements
+	public FileWriter fw;	// FileWriter to write to file
+
+	State(int N, int x, double lambda, int T) {
+		this.N = N;
+		this.x = x;
+		this.lambda = lambda;
+		this.T = T;
+		try {
+			file = new File("measurement_result.txt");
+			fw = new FileWriter(file);
+		} catch (IOException e) {
+			System.out.println("Error creating file/filewriter");
+			e.printStackTrace();
+		}
+	}
 	
 	// The following method is called by the main program each time a new event has been fetched
 	// from the event list in the main loop. 
@@ -32,21 +52,30 @@ class State extends GlobalSimulation{
 	// things are getting more complicated than this.
 	
 	private void arrival(){
-		if (numberInQueue == 0)
-			insertEvent(READY, time + 2*slump.nextDouble());
-		numberInQueue++;
-		insertEvent(ARRIVAL, time + 2.5*slump.nextDouble());
+		if (numberOfCustomers < N)
+			insertEvent(READY, time + x);
+			numberOfCustomers++;
+		insertEvent(ARRIVAL, time + poissonDist(lambda));
 	}
 	
 	private void ready(){
-		numberInQueue--;
-		if (numberInQueue > 0)
-			insertEvent(READY, time + 2*slump.nextDouble());
+		numberOfCustomers--;
 	}
 	
 	private void measure(){
-		accumulated = accumulated + numberInQueue;
-		noMeasurements++;
-		insertEvent(MEASURE, time + slump.nextDouble()*10);
+		accumulated = accumulated + numberOfCustomers;
+		numberOfMeasurements++;
+		try {
+			fw.write(numberOfCustomers + ", " + numberOfMeasurements + "\n");
+		} catch (IOException e) {
+			System.out.println("Error writing to file");
+			e.printStackTrace();
+		}
+		insertEvent(MEASURE, time + T);
+	}
+
+	private double  poissonDist(double mean) {
+		double u = slump.nextDouble();
+		return -Math.log(1 - u)/mean;
 	}
 }
