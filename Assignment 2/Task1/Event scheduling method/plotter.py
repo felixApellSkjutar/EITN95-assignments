@@ -1,23 +1,33 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-number_of_customer, number_of_measurement = [], []
+customer_numbers, measurement_numbers = [], []
 
 # Opening file and fetching the results
 with open("measurement_result.txt", "r") as file:
     line = file.readline()
     while line:
         result = line.strip().split(', ')
-        number_of_customer.append(int(result[0]))
-        number_of_measurement.append(int(result[1]))
+        customer_numbers.append(int(result[0]))
+        measurement_numbers.append(int(result[1]))
         line = file.readline()
 
-# Create a plot
-plt.plot(number_of_measurement, number_of_customer)
+N = len(customer_numbers)
+mean = np.mean(customer_numbers)
+var = np.sum((customer_numbers - mean)**2) / N
+std = np.sqrt(var)
 
-# Add labels and title
-plt.xlabel('measurement')
-plt.ylabel('customers')
-plt.title('Number of customers for each measurement')
+# Multiply by 1.96 because of 95%
+confidence_interval = 1.96 * (std / np.sqrt(N))
 
-plt.show()
+print("Confidence interval:", confidence_interval)
+
+# # Create a plot
+# plt.plot(measurement_numbers, customer_numbers)
+
+# # Add labels and title
+# plt.xlabel('measurement')
+# plt.ylabel('customers')
+# plt.title('Number of customers for each measurement')
+
+# plt.show()

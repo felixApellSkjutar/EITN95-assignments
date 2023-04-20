@@ -8,8 +8,8 @@ public class MainSimulation extends GlobalSimulation{
     	Event actEvent;
 
 		// Task variables
-		int N = 1000, x = 100, T = 1, M = 1000;
-		double lambda = 8.0;
+		int N = 100, x = 10, T = 4, M = 4000;
+		double lambda = 4.0;
 
     	State actState = new State(N, x, lambda, T); // The state that shoud be used
     	// Some events must be put in the event list at the beginning
