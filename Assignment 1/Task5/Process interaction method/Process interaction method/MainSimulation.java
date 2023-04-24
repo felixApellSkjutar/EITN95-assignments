@@ -31,7 +31,7 @@ public class MainSimulation extends Global{
     	Q5.sendTo = null;
 
     	Gen Generator = new Gen();
-    	Generator.lambda = 1/2;
+    	Generator.lambda = 1/2.0;
 		Generator.sendToList = new ArrayList<QS>(Arrays.asList(Q1, Q2, Q3, Q4, Q5));
     	
 		//H�r nedan skickas de f�rsta signalerna f�r att simuleringen ska komma ig�ng.

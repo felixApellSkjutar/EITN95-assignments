@@ -29,7 +29,7 @@ class Gen extends Proc{
 	}
 
 	private Proc nextQueue() {
-		return randomDispatch();
+		return smartDispatch();
 	}
 
 	private Proc randomDispatch() {
