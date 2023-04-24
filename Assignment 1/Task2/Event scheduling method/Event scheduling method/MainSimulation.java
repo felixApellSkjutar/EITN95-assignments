@@ -10,7 +10,6 @@ public class MainSimulation extends GlobalSimulation{
     	// Some events must be put in the event list at the beginning
         insertEvent(ARRIVAL_A, 0);  
         insertEvent(MEASURE_A, 5);
-        insertEvent(MEASURE_B, 5);
         
         // The main simulation loop
     	while (actState.noMeasurements < 1200){
@@ -20,9 +19,7 @@ public class MainSimulation extends GlobalSimulation{
     	}
     	
     	// Printing the result of the simulation, in this case a mean value
-    	System.out.println("Mean value of customers in BufferA " + 1.0*actState.accumulated/actState.noMeasurements);
-		System.out.println("Mean value of customers in BufferB " + 1.0*actState.accumulated2/actState.noMeasurements2);
-		System.out.println("Mean value of customers in Buffern " + 1.0*(actState.accumulated+actState.accumulated2)/(actState.noMeasurements+actState.noMeasurements2));
+		System.out.println("Mean value of customers in Buffer: " + 1.0*actState.accumulated/actState.noMeasurements);
 
     }
 }

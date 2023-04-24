@@ -5,13 +5,12 @@ class State extends GlobalSimulation{
 	
 	// Here follows the state variables and other variables that might be needed
 	// e.g. for measurements
-	public int numberInBufferA = 0, accumulated = 0, noMeasurements = 0, numberInBufferB = 0, accumulated2 = 0, noMeasurements2 = 0, noCustomers1 = 0;
+	public int numberA = 0, accumulated = 0, noMeasurements = 0, numberB = 0;
 	public double lambda = 150;
 	public double serviceTimeA = 0.002; 	// XA in task
 	public double serviceTimeB = 0.004; 	// XA in task
 	Random slump = new Random(); // This is just a random number generator
 	public int d = 1; 						// delay
-	//public double d = expDist(1); 						// delay
 	
 	
 	// The following method is called by the main program each time a new event has been fetched
@@ -25,16 +24,13 @@ class State extends GlobalSimulation{
 				readyA();
 				break;
 			case MEASURE_A:
-				measureA();
+				measure();
 				break;
 			case ARRIVAL_B:
 				arrivalB();
 				break;
 			case READY_B:
 				readyB();
-				break;
-			case MEASURE_B:
-				measureB();
 				break;
 		}
 	}
@@ -45,67 +41,64 @@ class State extends GlobalSimulation{
 	// things are getting more complicated than this.
 	
 	private void arrivalA(){
-		double arrivalTime = expDist(1.0*1/lambda);
+		double arrivalTime = expDist(1.0/lambda);
 		// If there are nothing in BufferA or B -> move to serverA
-			if (numberInBufferA + numberInBufferB == 0)
-				insertEvent(READY_A, time + serviceTimeA);
-			numberInBufferA++;
-			noCustomers1++;
-		
+		if (numberA + numberB == 0) {
+			insertEvent(READY_A, time + serviceTimeA);
+		}
+		numberA++;
 		insertEvent(ARRIVAL_A, time + arrivalTime);
 	}
 
 	private void readyA(){
-		numberInBufferA--;
-		// Prio B
-		/* if (numberInBufferB > 0)
-			insertEvent(READY_B, time + serviceTimeB);
-		else if(numberInBufferA > 0)
-			insertEvent(READY_A, time + serviceTimeA); */
-		//Prio A
-		if (numberInBufferA > 0)
-			insertEvent(READY_A, time + serviceTimeA);
-		else if(numberInBufferB > 0)
-			insertEvent(READY_B, time + serviceTimeB);
-		
+		numberA--;
 		insertEvent(ARRIVAL_B, time + d);
+		// insertEvent(ARRIVAL_B, time + expDist(1.0));
+		// Prio B
+		// if (numberB > 0) {
+		// 	insertEvent(READY_B, time + serviceTimeB);
+		// } else if (numberA > 0) {
+		// 	insertEvent(READY_A, time + serviceTimeA);
+		// }
+		//Prio A
+		if (numberA > 0) {
+			insertEvent(READY_A, time + serviceTimeA);
+		} else if (numberB > 0) {
+			insertEvent(READY_B, time + serviceTimeB);
+		}
 	}
 	
-	private void measureA(){
-		accumulated = accumulated + numberInBufferA;
+	private void arrivalB(){
+		if (numberA + numberB == 0) {
+			insertEvent(READY_B, time + serviceTimeB);
+		}
+		numberB++;
+	}
+	
+	private void readyB(){
+		numberB--;
+		//Prio B
+		// if (numberB > 0) {
+		// 	insertEvent(READY_B, time + serviceTimeB);
+		// } else if (numberA > 0) {
+		// 	insertEvent(READY_A, time + serviceTimeA);
+		// }
+		// Prio A
+		if (numberA > 0) {
+			insertEvent(READY_A, time + serviceTimeA);
+		} else if (numberB > 0) {
+			insertEvent(READY_B, time + serviceTimeB);
+		}
+	}
+	
+	private void measure(){
+		accumulated = accumulated + numberA + numberB;
 		noMeasurements++;
 		insertEvent(MEASURE_A, time + 0.1);
 	}
 
-	private void arrivalB(){
-		if (numberInBufferB == 0)
-			insertEvent(READY_B, time + serviceTimeB);
-		numberInBufferB++;
-	}
-
-	private void readyB(){
-		numberInBufferB--;
-
-		//Prio B
-		/* if (numberInBufferB > 0)
-			insertEvent(READY_B, time + serviceTimeB);
-		else if(numberInBufferA > 0)
-			insertEvent(READY_A, time + serviceTimeA); */
-		// Prio A
-		if (numberInBufferA > 0)
-			insertEvent(READY_A, time + serviceTimeA);
-		else if(numberInBufferB > 0)
-			insertEvent(READY_B, time + serviceTimeB);
-	}
-
-	private void measureB(){
-		accumulated2 = accumulated2 + numberInBufferB;
-		noMeasurements2++;
-		insertEvent(MEASURE_B, time + 0.1);
-	}
-
-	private double  expDist(double mean) {
+	private double expDist(double mean) {
 		double u = slump.nextDouble();
-		return (Math.log(1 - u)*(-mean));
+		return Math.log(1 - u)*(-mean);
 	}
 }
