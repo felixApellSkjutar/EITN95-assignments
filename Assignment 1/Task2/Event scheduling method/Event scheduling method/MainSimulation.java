@@ -20,8 +20,6 @@ public class MainSimulation extends GlobalSimulation{
     	}
     	
     	// Printing the result of the simulation, in this case a mean value
-    	System.out.println("Mean value of customers in BufferA " + 1.0*actState.accumulated/actState.noMeasurements);
-		System.out.println("Mean value of customers in BufferB " + 1.0*actState.accumulated2/actState.noMeasurements2);
 		System.out.println("Mean value of customers in Buffern " + 1.0*(actState.accumulated+actState.accumulated2)/(actState.noMeasurements+actState.noMeasurements2));
 
     }
