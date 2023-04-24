@@ -20,6 +20,5 @@ public class MainSimulation extends GlobalSimulation{
     	
     	// Printing the result of the simulation, in this case a mean value
 		System.out.println("Mean value of customers in Buffer: " + 1.0*actState.accumulated/actState.noMeasurements);
-
     }
 }
