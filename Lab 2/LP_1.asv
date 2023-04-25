@@ -1,0 +1,23 @@
+clc
+clear all
+
+c = [-13;
+    -11];
+A = [4 5;
+    5 3;
+    1 2];
+b = [1500;
+    1575;
+    420];
+lb = [0;
+    0];
+%options = optimoptions('linprog', 'Algorithm', 'interior-point', 'Display', 'iter');
+options = optimoptions('linprog', 'Algorithm', 'interior-point', 'Display', 'off');
+%options = optimoptions('linprog', 'Algorithm', 'dual-simplex', 'Display', 'iter');
+%options = optimoptions('linprog', 'Algorithm', 'dual-simplex', 'Display', 'off');
+[x, fval, output, lambda] = linprog(c', A, b, [], [], lb, [], [], options);
+
+disp('Optimal solution x for task 1:');
+disp(x);
+disp('Optimal function value:');
+disp(fval);
