@@ -5,20 +5,27 @@ class State extends GlobalSimulation{
 	
 	// Here follows the state variables and other variables that might be needed
 	// e.g. for measurements
-	public int numberInQueue = 0, accumulated = 0, noMeasurements = 0;
+	public int  nmbrUnhandledPresc = 0, numberInQueue = 0, accumulated = 0, noMeasurements = 0;
 
 	Random slump = new Random(); // This is just a random number generator
 	
-	
+	double mean = 15; //mean inter-arrival time: 4/hour
+	double maxArrivalTime = 480; //the pharmacy is open for 8h
+	public List<Double> iterations = new ArrayList<Double>();
+	public List<Double> prescTimes = new ArrayList<Double>();
 	// The following method is called by the main program each time a new event has been fetched
 	// from the event list in the main loop. 
 	public void treatEvent(Event x){
 		switch (x.eventType){
 			case ARRIVAL:
+				//if (x.eventTime < maxArrivalTime)
 				arrival();
 				break;
 			case READY:
 				ready();
+				break;
+			case RESET:
+				reset();
 				break;
 			case MEASURE:
 				measure();
@@ -32,21 +39,63 @@ class State extends GlobalSimulation{
 	// things are getting more complicated than this.
 	
 	private void arrival(){
-		if (numberInQueue == 0)
-			insertEvent(READY, time + 2*slump.nextDouble());
+		if (numberInQueue == 0){
+			double serviceTime = prescriptonFill(slump);
+			prescTimes.add(serviceTime);
+			insertEvent(READY, time + serviceTime);
+		}
+		nmbrUnhandledPresc++;
 		numberInQueue++;
-		insertEvent(ARRIVAL, time + 2.5*slump.nextDouble());
+		double nextTime = time + getPoisson(mean);
+		if (nextTime < maxArrivalTime)
+			insertEvent(ARRIVAL, nextTime);
+		else
+			insertEvent(RESET, nextTime);
 	}
 	
 	private void ready(){
 		numberInQueue--;
-		if (numberInQueue > 0)
-			insertEvent(READY, time + 2*slump.nextDouble());
+		nmbrUnhandledPresc--;
+		if (numberInQueue > 0){
+			double serviceTime = prescriptonFill(slump);
+			prescTimes.add(serviceTime);
+			insertEvent(READY, time + serviceTime);
+		}
+	//	if (time >= maxArrivalTime && nmbrUnhandledPresc == 0) {
+	//		insertEvent(RESET, time);
+	//	}
 	}
 	
 	private void measure(){
 		accumulated = accumulated + numberInQueue;
 		noMeasurements++;
 		insertEvent(MEASURE, time + slump.nextDouble()*10);
+	}
+
+	private void reset() {
+		iterations.add(time-maxArrivalTime);
+		time = 0;
+		nmbrUnhandledPresc = 0;
+		numberInQueue = 0;
+		insertEvent(ARRIVAL, 0);
+        insertEvent(MEASURE, 5);
+	}
+
+	public static int getPoisson(double lambda) {
+		double L = Math.exp(-lambda);
+		double p = 1.0;
+		int k = 0;
+	  
+		do {
+		  k++;
+		  p *= Math.random();
+		} while (p > L);
+	  
+		return k - 1;
+	  }
+
+	private double prescriptonFill(Random slump) {
+		//uniformly distributed between 10-20 min
+		return ((new Random()).nextDouble(11)) + 10;
 	}
 }
