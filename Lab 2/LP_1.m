@@ -15,19 +15,19 @@ lb = [0;
 options = optimoptions('linprog', 'Algorithm', 'interior-point', 'Display', 'off');
 [x, fval] = linprog(c', A, b, [], [], lb, [], [], options);
 
-disp('Optimal maximum solution x for task 1:');
+disp('Optimal maximized solution x for task 1:');
 disp(x);
-disp('Optimal maximum function value for task 1:');
+disp('Optimal value for task 1:');
 disp(-fval);
 
 
-c = [-1500;
-    -1575;
-    -420];
-A = [4 5 1;
-    5 3 2];
-b = [13;
-    11];
+c = [1500;
+    1575;
+    420];
+A = [-4 -5 -1;
+    -5 -3 -2];
+b = [-13;
+    -11];
 lb = [0;
     0;
     0];
@@ -35,7 +35,13 @@ lb = [0;
 options = optimoptions('linprog', 'Algorithm', 'dual-simplex', 'Display', 'off');
 [y, fval] = linprog(c', A, b, [], [], lb, [], [], options);
 
-disp('Optimal minimum solution x for task 2:');
+disp('Optimal minimized solution x for task 2:');
 disp(y);
-disp('Optimal minimum function value for task 2:');
+disp('Optimal value for task 2:');
 disp(fval);
+
+
+dataPoints = [1575, 1590, 1605, 1620, 1635, 1650, 1665, 1680, 1695, 1710, 1725];
+objectiveValues = [4335, 4367.142857, 4399.285714, 4431.428571, 4463.571429, 4495.714286, 4527.857143, 4560, 4584.230769, 4608.461538, 4632.692308];
+plot(dataPoints, objectiveValues, '-o')
+
