@@ -11,6 +11,7 @@ class State extends GlobalSimulation{
 	
 	double mean = 15; //mean inter-arrival time: 4/hour
 	double maxArrivalTime = 480; //the pharmacy is open for 8h
+	double lastPresctiptionTime = 0;
 	public List<Double> iterations = new ArrayList<Double>();
 	public List<Double> prescTimes = new ArrayList<Double>();
 	// The following method is called by the main program each time a new event has been fetched
@@ -46,7 +47,7 @@ class State extends GlobalSimulation{
 		}
 		nmbrUnhandledPresc++;
 		numberInQueue++;
-		double nextTime = time + getPoisson(mean);
+		double nextTime = time + expDist(mean);
 		if (nextTime < maxArrivalTime)
 			insertEvent(ARRIVAL, nextTime);
 		else
@@ -56,6 +57,7 @@ class State extends GlobalSimulation{
 	private void ready(){
 		numberInQueue--;
 		nmbrUnhandledPresc--;
+		lastPresctiptionTime = time;
 		if (numberInQueue > 0){
 			double serviceTime = prescriptonFill(slump);
 			prescTimes.add(serviceTime);
@@ -73,7 +75,7 @@ class State extends GlobalSimulation{
 	}
 
 	private void reset() {
-		iterations.add(time-maxArrivalTime);
+		iterations.add(lastPresctiptionTime);
 		time = 0;
 		nmbrUnhandledPresc = 0;
 		numberInQueue = 0;
@@ -81,18 +83,10 @@ class State extends GlobalSimulation{
         insertEvent(MEASURE, 5);
 	}
 
-	public static int getPoisson(double lambda) {
-		double L = Math.exp(-lambda);
-		double p = 1.0;
-		int k = 0;
-	  
-		do {
-		  k++;
-		  p *= Math.random();
-		} while (p > L);
-	  
-		return k - 1;
-	  }
+	private double expDist(double mean) {
+		double u = slump.nextDouble();
+		return Math.log(1 - u)*(-mean);
+	}
 
 	private double prescriptonFill(Random slump) {
 		//uniformly distributed between 10-20 min

@@ -28,7 +28,7 @@ public class MainSimulation extends GlobalSimulation{
         
 
         // The main simulation loop
-    	while (actState.iterations.size() < 100000){
+    	while (actState.iterations.size() < 1000){
 			
 			actEvent = eventList.fetchEvent();
 			time = actEvent.eventTime;
