@@ -9,7 +9,7 @@ class State extends GlobalSimulation{
 
 	public double monthlyRate = 1 + 0.3/12.0;
 	public double balance = 0;
-	public double monthlyDeposit = 5000; //10000 or 20000
+	public double monthlyDeposit = 5000; //5000, 10000 or 20000
 
 	Random slump = new Random(); // This is just a random number generator
 	
@@ -34,6 +34,7 @@ class State extends GlobalSimulation{
 				valueDrop(0.4);
 				break;
 			case NOSELL:
+				valueDrop(0.9);
 				break;
 		}
 	}
@@ -50,17 +51,16 @@ class State extends GlobalSimulation{
 	}
 
 	private void choice(){
-		// May need to be fix
-		double slumpTime = 4*12*slump.nextDouble(); // 4 years*12months/year
+		double slumpTime = time+4*12*slump.nextDouble(); // 4 years*12months/year
 		int caseChoice = slump.nextInt(100);
 		if(caseChoice < 10){
-			insertEvent(SELL25, time+slumpTime);
+			insertEvent(SELL25, slumpTime);
 		} else if (caseChoice < 35){
-			insertEvent(SELL40, time+slumpTime);
+			insertEvent(SELL40, slumpTime);
 		} else if(caseChoice < 50){
-			insertEvent(SELL50, time+slumpTime);
+			insertEvent(SELL50, slumpTime);
 		} else {
-			insertEvent(NOSELL, time+slumpTime);
+			insertEvent(NOSELL, slumpTime);
 		}
 	}
 
