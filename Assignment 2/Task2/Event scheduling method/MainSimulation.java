@@ -8,75 +8,107 @@ public class MainSimulation extends GlobalSimulation{
  
     public static void main(String[] args) throws IOException {
     	Event actEvent;
-    	State actState = new State(); // The state that shoud be used
-    	// Some events must be put in the event list at the beginning
-        insertEvent(ARRIVAL, 0);  
-        insertEvent(MEASURE, 5);
-
-		/*
-		 * PLANEN:
-		 * 
-		 * öppettider 09:00 - 17:00
-		 * Räkna tiden i minuter: 8 timmar -> 480 minuter
-		 * ta emot recept mellan t = 0 -> t = 480
-		 * Kunder kommer enligt Poisson med rate 4/timme dvs mean = 15 min
-		 * Varje arrival: hantera denna kund
-		 * 		generera nästa tid
-		 * 		if nästa tid större än 480, generera event för att fylla recept på t = 480 + dist
-		 * När kö med recept tom -> avsluta simulering och rapportera tiden.
-		 */
-        
-
+		
+		List<Double> endTimes = new ArrayList<Double>();
+		List<Double> serviceTimes = new ArrayList<Double>();
         // The main simulation loop
-    	while (actState.iterations.size() < 1000){
+		State actState = new State(); 
+    	for (int i = 0; i < 1000; i++){
+			insertEvent(ARRIVAL, 9.0*60); 
 			
-			actEvent = eventList.fetchEvent();
-			time = actEvent.eventTime;
-			actState.treatEvent(actEvent);
-			
-			
-			
-//			System.out.println("KÖÖ " + actState.numberInQueue);
-//			System.out.println("RECEPT " + actState.nmbrUnhandledPresc);
-//			System.out.println("EVENT " + actEvent.eventType);
+			while (time < actState.maxArrivalTime){
+				actEvent = eventList.fetchEvent();
+				time = actEvent.eventTime;
+				if (time >= actState.maxArrivalTime && actState.numberInQueue == 0){
+					System.out.println("in ready: " + actState.r + " arr: " + actState.arr + " numIn Kö: " + actState.numberInQueue + " time: " + time + " arrtimes " + actState.arrivalTimes );
+					break;
+				}
+				actState.treatEvent(actEvent);
+			}
+			serviceTimes.addAll(actState.qTimes);
+			endTimes.add(time);
+			actState = new State();
+			time = 0;
     	}
     	
-    	// Printing the result of the simulation, in this case a mean value
-    	System.out.println("Average nmnbr customers in queue: " + 1.0*actState.accumulated/actState.noMeasurements);
 		
-		List<Double> ds = actState.iterations;
+		//List<Double> ds = actState.iterations;
 		//DoubleStream ds = actState.iterations.stream().mapToDouble(Double::doubleValue);
     	// System.out.println(actState.iterations);
 		
-		long N = ds.stream().count();
-		double mean = ds.stream().mapToDouble(Double::doubleValue).sum() / N;
-		double variance = ds.stream().mapToDouble(Double::doubleValue).map(x -> x - mean).map(x -> x * x).sum() / N;
+		// long N = ds.stream().count();
+		// double mean = ds.stream().mapToDouble(Double::doubleValue).sum() / N;
+		// double variance = ds.stream().mapToDouble(Double::doubleValue).map(x -> x - mean).map(x -> x * x).sum() / N;
+		// double stdDev = Math.sqrt(variance);
+		// double confInt = 1.96 * stdDev / Math.sqrt(N);
+
+		// List<Double> prescTimes = actState.prescTimes;
+		// long Nb = prescTimes.stream().count();
+		// double meanB = prescTimes.stream().mapToDouble(Double::doubleValue).sum() / Nb;
+		// double varianceB = prescTimes.stream().mapToDouble(Double::doubleValue).map(x -> x - meanB).map(x -> x * x).sum() / Nb;
+		// double stdDevB = Math.sqrt(varianceB);
+		// double confIntB = 1.96 * stdDevB / Math.sqrt(Nb);
+
+		
+		// List<Double> queuetimes = actState.qTimes;
+		// Double max = queuetimes.stream().mapToDouble(Double::doubleValue).max().getAsDouble();
+		// Double min = queuetimes.stream().mapToDouble(Double::doubleValue).min().getAsDouble();
+		// long NQ = queuetimes.stream().count();
+		// double meanQ = queuetimes.stream().mapToDouble(Double::doubleValue).sum() / NQ;
+		// double varianceQ = queuetimes.stream().mapToDouble(Double::doubleValue).map(x -> x - meanQ).map(x -> x * x).sum() / NQ;
+		// double stdDevQ = Math.sqrt(varianceQ);
+		// double confIntQ = 1.96 * stdDevQ / Math.sqrt(NQ);
+		long N = endTimes.stream().count();
+		double mean = endTimes.stream().mapToDouble(Double::doubleValue).sum() / N;
+		double variance = endTimes.stream().mapToDouble(Double::doubleValue).map(x -> x - mean).map(x -> x * x).sum() / N;
 		double stdDev = Math.sqrt(variance);
 		double confInt = 1.96 * stdDev / Math.sqrt(N);
-
-		List<Double> prescTimes = actState.prescTimes;
-		long Nb = prescTimes.stream().count();
-		double meanB = prescTimes.stream().mapToDouble(Double::doubleValue).sum() / Nb;
-		double varianceB = prescTimes.stream().mapToDouble(Double::doubleValue).map(x -> x - meanB).map(x -> x * x).sum() / Nb;
-		double stdDevB = Math.sqrt(varianceB);
-		double confIntB = 1.96 * stdDevB / Math.sqrt(Nb);
-
+		Double max = endTimes.stream().mapToDouble(Double::doubleValue).max().getAsDouble();
+		Double min = endTimes.stream().mapToDouble(Double::doubleValue).min().getAsDouble();
+		
+		System.out.println("size endtimes: " + endTimes.size());
 		System.out.println("Mean: " + mean);
 		System.out.println("Variance: " + variance);
 		System.out.println("Standard deviation: " + stdDev);
 		System.out.println("Confidence interval: " + confInt);
 		System.out.println("Confidence interval upper bound: " + (mean + confInt));
 		System.out.println("Confidence interval lower bound: " + (mean - confInt));
-
+		System.out.println("max: " + max);
+		System.out.println("min: " + min);
+		
+		
 		System.out.println("--------------------");
 
+		long Nb = serviceTimes.stream().count();
+		double meanB = serviceTimes.stream().mapToDouble(Double::doubleValue).sum() / Nb;
+		double varianceB = serviceTimes.stream().mapToDouble(Double::doubleValue).map(x -> x - meanB).map(x -> x * x).sum() / Nb;
+		double stdDevB = Math.sqrt(varianceB);
+		double confIntB = 1.96 * stdDevB / Math.sqrt(Nb);
+		Double maxB = serviceTimes.stream().mapToDouble(Double::doubleValue).max().getAsDouble();
+		Double minB = serviceTimes.stream().mapToDouble(Double::doubleValue).min().getAsDouble();
+
+		System.out.println("size servicetimes: " + serviceTimes.size());
 		System.out.println("Mean: " + meanB);
 		System.out.println("Variance: " + varianceB);
 		System.out.println("Standard deviation: " + stdDevB);
 		System.out.println("Confidence interval: " + confIntB);
 		System.out.println("Confidence interval upper bound: " + (meanB + confIntB));
 		System.out.println("Confidence interval lower bound: " + (meanB - confIntB));
+		System.out.println("max: " + maxB);
+		System.out.println("min: " + minB);
 		
+		
+		// System.out.println("Data size: " + NQ);
+		// System.out.println("max: " + max);
+		// System.out.println("min: " + min);
+		// System.out.println("Mean: " + meanQ);
+		// System.out.println("Variance: " + varianceQ);
+		// System.out.println("Standard deviation: " + stdDevQ);
+		// System.out.println("Confidence interval: " + confIntQ);
+		// System.out.println("Confidence interval upper bound: " + (meanQ + confIntQ));
+		// System.out.println("Confidence interval lower bound: " + (meanQ - confIntQ));
+
+//		System.out.println(endTimes);
     }
 	
 }
