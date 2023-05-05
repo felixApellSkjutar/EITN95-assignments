@@ -10,7 +10,7 @@ class State extends GlobalSimulation{
 	Random slump = new Random(); // This is just a random number generator
 	
 	int arr = 0, r = 0;
-	double lambda = 4.0/60; //mean inter-arrival time: 4/hour
+	double lambda = 4.0/60, lastArrival = 0, qSize = 0; //mean inter-arrival time: 4/hour
 	double maxArrivalTime = 17*60.0; //the pharmacy is open for 8h
 	public List<Double> iterations = new ArrayList<Double>();
 	public List<Double> qTimes = new ArrayList<Double>();
@@ -39,6 +39,7 @@ class State extends GlobalSimulation{
 	
 	private void arrival(){
 		arrivalTimes.addLast(time);
+		qSize = numberInQueue;
 		if (numberInQueue == 0){
 			double serviceTime = prescriptonFill(slump);
 			insertEvent(READY, time + serviceTime);
@@ -49,6 +50,7 @@ class State extends GlobalSimulation{
 	}
 	
 	private void ready(){
+		lastArrival = time;
 		qTimes.add(time - arrivalTimes.pop());
 		numberInQueue--;
 		if (numberInQueue > 0){

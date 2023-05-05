@@ -14,18 +14,21 @@ public class MainSimulation extends GlobalSimulation{
         // The main simulation loop
 		State actState = new State(); 
     	for (int i = 0; i < 1000; i++){
-			insertEvent(ARRIVAL, 9.0*60); 
+			double startingTime = 9.0*60; 
+			time = startingTime;
+			insertEvent(ARRIVAL, startingTime); 
 			
-			while (time < actState.maxArrivalTime){
+			while (true){
 				actEvent = eventList.fetchEvent();
 				time = actEvent.eventTime;
+				actState.treatEvent(actEvent);
 				if (time >= actState.maxArrivalTime && actState.numberInQueue == 0){
-					System.out.println("in ready: " + actState.r + " arr: " + actState.arr + " numIn Kö: " + actState.numberInQueue + " time: " + time + " arrtimes " + actState.arrivalTimes );
+					//System.out.println("in ready: " + actState.r + " arr: " + actState.arr + " numIn Kö: " + actState.numberInQueue + " time: " + time + " arrtimes " + actState.arrivalTimes );
 					break;
 				}
-				actState.treatEvent(actEvent);
 			}
 			serviceTimes.addAll(actState.qTimes);
+			//System.out.println("nmKö: " +actState.numberInQueue);
 			endTimes.add(time);
 			actState = new State();
 			time = 0;
