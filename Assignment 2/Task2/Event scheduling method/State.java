@@ -68,6 +68,6 @@ class State extends GlobalSimulation{
 
 	private double prescriptonFill(Random slump) {
 		//uniformly distributed between 10-20 min
-		return ((new Random()).nextDouble(11)) + 10;
+		return ((new Random()).nextDouble())*10.0 + 10.0;
 	}
 }
