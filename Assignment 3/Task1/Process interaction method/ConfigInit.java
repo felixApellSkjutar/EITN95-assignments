@@ -1,6 +1,4 @@
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
 import java.io.*;
 
 public class ConfigInit {
@@ -53,7 +51,7 @@ public class ConfigInit {
                 writer.println("ts = " + ts);
                 writer.println("r = " + r);
                 for (int i = 0; i < Integer.parseInt(n); i++) {
-                    writer.println("point_" + (i+1) + " = [" + xCoordinates[i] + ", " + yCoordinates[i] + "]");
+                    writer.println("point_" + i + " = " + xCoordinates[i] + " " + yCoordinates[i]);
                 }
                 writer.close();
             }
