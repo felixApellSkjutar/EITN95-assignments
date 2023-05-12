@@ -34,8 +34,8 @@ public class MainSimulation extends Global{
 		Sensor[] sensor_nodes = new Sensor[n];
 		for (int i = 0; i < n; i++) {
 			String[] point = config.getProperty("point_" + Integer.toString(i)).split(" ");
-			Sensor sensor_node = new Sensor(Double.parseDouble(point[0]), Double.parseDouble(point[1]), ts);
-			SignalList.SendSignal(START_REPORT, sensor_node, Tp);
+			Sensor sensor_node = new Sensor(Double.parseDouble(point[0]), Double.parseDouble(point[1]), r, ts, Gateway);
+			SignalList.SendSignal(START_REPORT, null, sensor_node, Tp);
 			sensor_nodes[i] = sensor_node;
 		}
 		
@@ -55,12 +55,9 @@ public class MainSimulation extends Global{
     	//To start the simulation the first signals are put in the signal list
 
     	// SignalList.SendSignal(SEND, Generator, time);
-    	SignalList.SendSignal(MEASURE, Gateway, time);
+    	SignalList.SendSignal(MEASURE, null, Gateway, time);
 
-
-    	// Detta �r simuleringsloopen:
     	// This is the main loop
-
     	while (time < 100000){
     		actSignal = SignalList.FetchSignal();
     		time = actSignal.arrivalTime;
@@ -70,7 +67,7 @@ public class MainSimulation extends Global{
     	//Slutligen skrivs resultatet av simuleringen ut nedan:
     	//Finally the result of the simulation is printed below:
 
-    	System.out.println("Mean number of customers in queuing system: " + 1.0*Gateway.accumulated/Gateway.noMeasurements);
+    	System.out.println("Mean number of customers in queuing system: " + 1.0*Gateway.noMeasurements);
 
     }
 }
