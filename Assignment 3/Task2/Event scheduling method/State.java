@@ -14,14 +14,11 @@ class State extends GlobalSimulation{
 	// from the event list in the main loop. 
 	public void treatEvent(Event x){
 		switch (x.eventType){
-			case ARRIVAL:
-				arrival();
+			case WALK:
+				walk();
 				break;
-			case READY:
-				ready();
-				break;
-			case MEASURE:
-				measure();
+			case MEET:
+				meet();
 				break;
 		}
 	}
@@ -31,14 +28,15 @@ class State extends GlobalSimulation{
 	// have been placed in the case in treatEvent, but often it is simpler to write a method if 
 	// things are getting more complicated than this.
 	
-	private void arrival(){
-		if (numberInQueue == 0)
+	private void walk(){
+		//if (numberInQueue == 0)
+		
 			insertEvent(READY, time + 2*slump.nextDouble());
 		numberInQueue++;
 		insertEvent(ARRIVAL, time + 2.5*slump.nextDouble());
 	}
 	
-	private void ready(){
+	private void meet(){
 		numberInQueue--;
 		if (numberInQueue > 0)
 			insertEvent(READY, time + 2*slump.nextDouble());
