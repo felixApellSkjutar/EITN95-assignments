@@ -45,10 +45,10 @@ public class MainSimulation extends Global{
 		System.out.println("radius = " + r);
 		
     	//To start the simulation the first signals are put in the signal list
-    	SignalList.SendSignal(MEASURE, null, Gateway, time);
+    	SignalList.SendSignal(MEASURE, null, Gateway, time + 10);
 
     	// This is the main loop
-    	while (time < 100000){
+    	while (time < 50000){
     		actSignal = SignalList.FetchSignal();
     		time = actSignal.arrivalTime;
     		actSignal.destination.TreatSignal(actSignal);
@@ -63,7 +63,22 @@ public class MainSimulation extends Global{
 		
 		double lambda_p = (1.0*Gateway.totalSignals/time);
 		double T_put = lambda_p * Math.exp(-2*lambda_p);
+		double packetLoss = 1.0*Gateway.failedSignals/Gateway.totalSignals;
     	System.out.println("Throughput: " + T_put);
+		System.out.println("Packet loss: " + packetLoss);
+		System.out.println("Confidence interval: " + confidenceInterval(Gateway.packetLosses));
 
     }
+
+	private static double confidenceInterval(List<Double> list) {
+		int N = list.size();
+		double mean = list.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
+		double var = 0.0;
+		for (double d : list) {
+			var += Math.pow(d - mean, 2);
+		}
+		var = var / N;
+		double std = Math.sqrt(var);
+		return 1.96 * (std / Math.sqrt(N));
+	}
 }

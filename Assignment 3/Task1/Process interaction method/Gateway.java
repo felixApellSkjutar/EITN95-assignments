@@ -4,6 +4,7 @@ import java.io.*;
 class Gateway extends Proc{
 
 	public HashMap<Sensor, Boolean> activeSensors = new HashMap<Sensor, Boolean>();
+	public List<Double> packetLosses = new ArrayList<Double>();
 
 	public int totalSignals, successfulSignals, failedSignals, noMeasurements;
 	public Proc sendTo;
@@ -47,6 +48,8 @@ class Gateway extends Proc{
 
 			case MEASURE:{
 				noMeasurements++;
+				double packetLoss = 1.0*failedSignals / totalSignals;
+				packetLosses.add(packetLoss);
 				SignalList.SendSignal(MEASURE, this, this, time + 2*rand.nextDouble());
 			} break;
 		}
