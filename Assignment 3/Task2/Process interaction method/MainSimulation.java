@@ -31,8 +31,9 @@ public class MainSimulation extends Global{
     	//H�r nedan skickas de f�rsta signalerna f�r att simuleringen ska komma ig�ng.
     	//To start the simulation the first signals are put in the signal list
 
-		while (interval > 2 || stdDev == 0){
+		while (interval > 100 || stdDev == 0){
 			
+			Q1.students.clear();
 			for (int i = 0; i < 20; i++){
 				Student s = new Student(i);
 				Q1.students.add(s);
@@ -44,12 +45,20 @@ public class MainSimulation extends Global{
 			// Detta �r simuleringsloopen:
 			// This is the main loop
 
+			 int c = 0;
 			while (!Q1.finished()){
 				actSignal = SignalList.FetchSignal();
 				time = actSignal.arrivalTime;
 				actSignal.destination.TreatSignal(actSignal);
+				// System.out.println("c " + c); 
+				// if (c %10 == 0) {
+				//  	for (Student s : Q1.students){
+				//  		System.out.println(s.getID() + " " + Arrays.toString(s.relationships));
+				//  	}
+				//  }
+				//  c++;
 			}
-			System.out.print(runs);
+			//System.out.print(runs);
 
 			runs++;
 			totalTime += time;
@@ -57,20 +66,26 @@ public class MainSimulation extends Global{
 
 			mean = totalTime/runs;
 
+			//System.out.print("\tmean: " + (mean/60.0));
+
 			// Standard deviation
+			double variance = 0.0;
 			stdDev = 0.0;
 
-			for (double time : times){
-				stdDev += Math.pow(time-mean, 2); 
+			for (double t : times){
+				variance += Math.pow(t-mean, 2); 
 			}
-			stdDev = Math.sqrt(stdDev/runs);
-			System.out.println("stdDev: " + stdDev);
+			variance = variance/runs;
+
+			stdDev = Math.sqrt(variance);
+			//System.out.print("\tstdDev: " + (stdDev/60.0));
 
 			// with z-distribution
 			interval = 1.960*stdDev/Math.sqrt(runs);
-
+			//System.out.print("\tinterval: " + (interval/60.0) + "\n");
 			time = 0;
 
+			//System.out.println("runs: " + runs + " mean: " + mean + " stdDev: " + stdDev + " interval: " + interval);
     	}
 
     	//Slutligen skrivs resultatet av simuleringen ut nedan:

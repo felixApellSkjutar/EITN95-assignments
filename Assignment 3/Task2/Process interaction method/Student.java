@@ -6,10 +6,10 @@ public class Student {
 
     public double coordX;
     public double coordY;
-    private int[] relationships;
+    public int[] relationships;
     private boolean engaged;
     private Random slump = new Random();
-    public int speed = 4; // changes in tasks, 2, 4, slump.nextInt(7) + 1;
+    public int speed = 4;//slump.nextInt(7) + 1; //4; // changes in tasks, 2, 4, slump.nextInt(7) + 1;
     private double walkTimeStraight = 1.0/speed;
     private double walkTimeDiagonal = 1.0*Math.sqrt(2)/speed;
     private int id;
@@ -18,107 +18,69 @@ public class Student {
 
 
     public Student(int id){
-        coordX = 0.5 + slump.nextInt(20); //centering mid in square
-        coordY = 0.5 + slump.nextInt(20);
+        this.coordX = 0.5 + slump.nextInt(20); //centering mid in square
+        this.coordY = 0.5 + slump.nextInt(20);
         this.id = id;
-        direction = slump.nextInt(8) + 1;
-        tilesTilDirectionChange = slump.nextInt(10) + 1;
-        relationships = new int[20];
-        engaged = false;
+        this.direction = slump.nextInt(8) + 1;
+        this.tilesTilDirectionChange = slump.nextInt(10) + 1;
+        this.relationships = new int[20];
+        this.engaged = false;
 
     }
+
+    private void setNewDirection(){
+        this.direction = slump.nextInt(8) + 1;
+    }
+    private int[] getStep(int dir) {
+        switch(dir) {
+            case NORTHWEST:
+                return new int[]{-1, 1};
+            case NORTH:
+                return new int[]{0, 1};
+            case NORTHEAST:
+                return new int[]{1, 1};
+            case EAST:
+                return new int[]{1, 0};
+            case SOUTHEAST:
+                return new int[]{1, -1};
+            case SOUTH:
+                return new int[]{0, -1};
+            case SOUTHWEST:
+                return new int[]{-1, -1};
+            case WEST:
+                return new int[]{-1, 0};
+            default:
+                return new int[]{0, 0};
+        }
+    }
+    private boolean outOfBounds(int dir) {
+        int[] nextStep = getStep(dir);
+        return checkOutOfBounds(coordX + nextStep[0], coordY + nextStep[1]);
+    }
+
 
     public void walk(){
-        //engaged = false;
-        switch (direction){
-            case NORTHWEST:
-                if(!checkOutOfBounds(coordX - 1, coordY + 1)){
-                    coordX--;
-                    coordY++;
-                    direction();
-                } else {
-                    direction = slump.nextInt(8) + 1;
-                }
-                break;
-            case NORTH:
-                if(!checkOutOfBounds(coordX, coordY + 1)){
-                    coordY++;
-                    direction();
-                } else {
-                    direction = slump.nextInt(8) + 1;
-                }
-                break;
-
-            case NORTHEAST:
-                if(!checkOutOfBounds(coordX + 1, coordY + 1)){
-                    coordX++;
-                    coordY++;
-                    direction();
-                } else {
-                    direction = slump.nextInt(8) + 1;
-                }
-                break;
-
-            case EAST:
-                if(!checkOutOfBounds(coordX + 1, coordY)){
-                    coordX++;
-                    direction();
-                } else {
-                    direction = slump.nextInt(8) + 1;
-                }
-                break;
-
-            case SOUTHEAST:
-                if(!checkOutOfBounds(coordX + 1, coordY - 1)){
-                    coordX++;
-                    coordY--;
-                    direction();
-                } else {
-                    direction = slump.nextInt(8) + 1;
-                }
-                break;
-
-            case SOUTH:
-                if(!checkOutOfBounds(coordX, coordY - 1)){
-                    coordY--;
-                    direction();
-                } else {
-                    direction = slump.nextInt(8) + 1;
-                }
-                break;
-            
-            case SOUTHWEST:
-                if(!checkOutOfBounds(coordX - 1, coordY - 1)){
-                    coordX++;
-                    coordY--;
-                    direction();
-                } else {
-                    direction = slump.nextInt(8) + 1;
-                }
-                break;
-
-            case WEST:
-                if(!checkOutOfBounds(coordX, coordY - 1)){
-                    coordY--;
-                    direction();
-                } else {
-                    direction = slump.nextInt(8) + 1;
-                }
-                break;
+        this.tilesTilDirectionChange--;
+        if(outOfBounds(this.direction) || this.tilesTilDirectionChange == 0) {
+            setNewDirection();
+            this.tilesTilDirectionChange = slump.nextInt(10) + 1;
+        } else {
+            int[] nextStep = getStep(this.direction);
+            this.coordX += nextStep[0];
+            this.coordY += nextStep[1];
         }
-        //direction();
-        //direction = slump.nextInt(8) + 1;
     }
+
 
     public void socialize(Student otherStudent){
         //System.out.println("student" + id);
         //System.out.println("otherstudent" + otherStudent.getID());
         engaged = true;
-        otherStudent.engaged = true;
+        //otherStudent.engaged = true;
         relationships[otherStudent.getID()]++;
         //System.out.println("relation till other " + relationships[otherStudent.getID()]);
 
-        otherStudent.relationships[id]++;
+        //otherStudent.relationships[id]++;
     }
 
     public double getWalktime(){
@@ -149,13 +111,6 @@ public class Student {
         
     }
 
-    private void direction(){
-        tilesTilDirectionChange--;
-        if(tilesTilDirectionChange == 0){
-            tilesTilDirectionChange = slump.nextInt(10) + 1;
-            direction = slump.nextInt(8) + 1;
-        }
-    }
 
     public boolean finished() {
         //System.out.println(id + "s relation");
@@ -167,7 +122,7 @@ public class Student {
                 return false;
             }
         }
-        System.out.println(id + " är klar");
+//        System.out.println(id + " är klar");
         return true;
     }
 }
