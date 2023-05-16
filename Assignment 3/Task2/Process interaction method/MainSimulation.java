@@ -85,7 +85,7 @@ public class MainSimulation extends Global{
 			//System.out.print("\tinterval: " + (interval/60.0) + "\n");
 			time = 0;
 
-			//System.out.println("runs: " + runs + " mean: " + mean + " stdDev: " + stdDev + " interval: " + interval);
+			System.out.println("runs: " + runs + " mean: " + mean + " stdDev: " + stdDev + " interval: " + interval);
     	}
 
     	//Slutligen skrivs resultatet av simuleringen ut nedan:

@@ -69,9 +69,6 @@ class QS extends Proc{
 	}
 
 	public boolean finished(){
-		for(Student s : students){
-			System.out.println();
-		}
 		for (Student s : students){
 			if(!s.finished()){
 				return false;
