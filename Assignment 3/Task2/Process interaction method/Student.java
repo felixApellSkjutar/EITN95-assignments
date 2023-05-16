@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Random;
 
 public class Student {
@@ -5,36 +6,44 @@ public class Student {
 
     private double coordX;
     private double coordY;
-    private int[] relationships = new int[20];
+    private int[] relationships;
     private boolean engaged;
     private Random slump = new Random();
-    public int speed = 2; // changes in tasks, 2, 4, slump.nextInt(7) + 1;
+    public int speed = 4*60; // changes in tasks, 2, 4, slump.nextInt(7) + 1;
     private double walkTimeStraight = 1.0/speed;
     private double walkTimeDiagonal = 1.0*Math.sqrt(2)/speed;
     private int id;
-    private int direction = slump.nextInt(8) + 1;
+    private int direction;
+    private int tilesTilDirectionChange;
 
 
     public Student(int id){
         coordX = 0.5 + slump.nextInt(20); //centering mid in square
         coordY = 0.5 + slump.nextInt(20);
         this.id = id;
+        direction = slump.nextInt(8) + 1;
+        tilesTilDirectionChange = slump.nextInt(10) + 1;
+        relationships = new int[20];
+        engaged = false;
+
     }
 
     public void walk(){
-        // något med speed också, matchas med om de möts. Löser nog detta i QS:s TreatSignal.
-        
-        engaged = true;
+        //engaged = false;
         switch (direction){
             case NORTHWEST:
                 if(checkOutOfBounds(coordX - 1, coordY + 1)){
                     coordX--;
                     coordY++;
+                } else {
+                    direction = slump.nextInt(8) + 1;
                 }
                 break;
             case NORTH:
                 if(checkOutOfBounds(coordX, coordY + 1)){
                     coordY++;
+                } else {
+                    direction = slump.nextInt(8) + 1;
                 }
                 break;
 
@@ -42,12 +51,16 @@ public class Student {
                 if(checkOutOfBounds(coordX + 1, coordY + 1)){
                     coordX++;
                     coordY++;
+                } else {
+                    direction = slump.nextInt(8) + 1;
                 }
                 break;
 
             case EAST:
                 if(checkOutOfBounds(coordX + 1, coordY)){
                     coordX++;
+                } else {
+                    direction = slump.nextInt(8) + 1;
                 }
                 break;
 
@@ -55,12 +68,16 @@ public class Student {
                 if(checkOutOfBounds(coordX + 1, coordY - 1)){
                     coordX++;
                     coordY--;
+                } else {
+                    direction = slump.nextInt(8) + 1;
                 }
                 break;
 
             case SOUTH:
                 if(checkOutOfBounds(coordX, coordY - 1)){
                     coordY--;
+                } else {
+                    direction = slump.nextInt(8) + 1;
                 }
                 break;
             
@@ -68,22 +85,31 @@ public class Student {
                 if(checkOutOfBounds(coordX - 1, coordY - 1)){
                     coordX++;
                     coordY--;
+                } else {
+                    direction = slump.nextInt(8) + 1;
                 }
                 break;
 
             case WEST:
                 if(checkOutOfBounds(coordX, coordY - 1)){
                     coordY--;
+                } else {
+                    direction = slump.nextInt(8) + 1;
                 }
                 break;
         }
-        direction = slump.nextInt(8) + 1;
+        direction();
+        //direction = slump.nextInt(8) + 1;
     }
 
     public void socialize(Student otherStudent){
+        //System.out.println("student" + id);
+        //System.out.println("otherstudent" + otherStudent.getID());
         engaged = true;
         otherStudent.engaged = true;
         relationships[otherStudent.getID()]++;
+        //System.out.println("relation till other " + relationships[otherStudent.getID()]);
+
         otherStudent.relationships[id]++;
     }
 
@@ -102,11 +128,37 @@ public class Student {
         return engaged;
     }
 
+    public void setEngagedStatus(boolean status){
+        engaged = status;
+    }
+
     public boolean onSameSquare(Student otherStudent){
-        return coordX == otherStudent.coordX && coordY == otherStudent.coordY;
+        return coordX == otherStudent.coordX && coordY == otherStudent.coordY && otherStudent.getID() != id;
     }
 
     private boolean checkOutOfBounds(double x, double y){
         return (x > -1 && y > -1) && (x < 40 && y < 40);
+    }
+
+    private void direction(){
+        tilesTilDirectionChange--;
+        if(tilesTilDirectionChange == 0){
+            tilesTilDirectionChange = slump.nextInt(10) + 1;
+            direction = slump.nextInt(8) + 1;
+        }
+    }
+
+    public boolean finished() {
+        //System.out.println(id + "s relation");
+        //System.out.println(Arrays.toString(relationships));
+        //System.out.println(engaged);
+        
+        for(int i = 0; i < relationships.length; i++){
+            if(relationships[i] == 0 && i != id){
+                return false;
+            }
+        }
+        System.out.println(id + " är klar");
+        return true;
     }
 }

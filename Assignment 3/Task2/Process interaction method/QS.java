@@ -4,7 +4,6 @@ import java.io.*;
 // This class defines a simple queuing system with one server. It inherits Proc so that we can use time and the
 // signal names without dot notation
 class QS extends Proc{
-	//public int accumulated, noMeasurements;
 	public Proc sendTo;
 	public ArrayList<Student> students = new ArrayList<>();
 
@@ -27,10 +26,13 @@ class QS extends Proc{
 					}
 
 					SignalList.SendSignal(WALK,this, time + student.getWalktime(), student);
+				} else {
+					student.setEngagedStatus(false);
+					SignalList.SendSignal(WALK,this, time + student.getWalktime() + 1, student);
 				}
 			} break;
 
-			// Ej klar
+			
 			case MEET:{
 				Student otherStudent = null;
 				for(Student s : students){
@@ -39,19 +41,29 @@ class QS extends Proc{
 						break;
 					}
 				}
-				student.socialize(otherStudent);
-				// Hur fungerar det? Är mötenas status ömsesidiga eller räknas de bara från ena sidan?
-				// I så fall ändra i socialize så detta reflekteras.
-				SignalList.SendSignal(WALK,this, time + student.getWalktime() + 1, student);
+				if(!student.isEngaged()){
+					student.socialize(otherStudent);
+					SignalList.SendSignal(WALK,this, time + student.getWalktime() + 1, student);
+				} else {
+					SignalList.SendSignal(MEET, this, time + student.getWalktime() + 1, student);
+					student.setEngagedStatus(false);
 
+				}
 				
 			} break;
 
-			/* case MEASURE:{
-				noMeasurements++;
-				accumulated = accumulated + numberInQueue;
-				SignalList.SendSignal(MEASURE, this, time + 2*slump.nextDouble());
-			} break; */
 		}
+	}
+
+	public boolean finished(){
+		for(Student s : students){
+			System.out.println();
+		}
+		for (Student s : students){
+			if(!s.finished()){
+				return false;
+			}
+		}
+		return true;
 	}
 }

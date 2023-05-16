@@ -32,25 +32,26 @@ public class MainSimulation extends Global{
     	//To start the simulation the first signals are put in the signal list
 
 		while (interval > 2 || stdDev == 0){
+			
 			for (int i = 0; i < 20; i++){
 				Student s = new Student(i);
 				Q1.students.add(s);
-
+				
 				SignalList.SendSignal(WALK, Q1, time, s);
 			}
-			//SignalList.SendSignal(MEASURE, Q1, time);
+			//System.out.println(Q1.students.size());
 
+			// Detta �r simuleringsloopen:
+			// This is the main loop
 
-    	// Detta �r simuleringsloopen:
-    	// This is the main loop
+			while (!Q1.finished()){
+				actSignal = SignalList.FetchSignal();
+				time = actSignal.arrivalTime;
+				actSignal.destination.TreatSignal(actSignal);
+			}
+			System.out.print(runs);
 
-    	while (time < 100000){
-    		actSignal = SignalList.FetchSignal();
-    		time = actSignal.arrivalTime;
-			System.out.print(actSignal.destination);
-    		actSignal.destination.TreatSignal(actSignal);
-    	}
-		runs++;
+			runs++;
 			totalTime += time;
 			times.add(time);
 
