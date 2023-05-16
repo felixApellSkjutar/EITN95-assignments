@@ -35,6 +35,7 @@ public class Student {
                 if(checkOutOfBounds(coordX - 1, coordY + 1)){
                     coordX--;
                     coordY++;
+                    direction();
                 } else {
                     direction = slump.nextInt(8) + 1;
                 }
@@ -42,6 +43,7 @@ public class Student {
             case NORTH:
                 if(checkOutOfBounds(coordX, coordY + 1)){
                     coordY++;
+                    direction();
                 } else {
                     direction = slump.nextInt(8) + 1;
                 }
@@ -51,6 +53,7 @@ public class Student {
                 if(checkOutOfBounds(coordX + 1, coordY + 1)){
                     coordX++;
                     coordY++;
+                    direction();
                 } else {
                     direction = slump.nextInt(8) + 1;
                 }
@@ -59,6 +62,7 @@ public class Student {
             case EAST:
                 if(checkOutOfBounds(coordX + 1, coordY)){
                     coordX++;
+                    direction();
                 } else {
                     direction = slump.nextInt(8) + 1;
                 }
@@ -68,6 +72,7 @@ public class Student {
                 if(checkOutOfBounds(coordX + 1, coordY - 1)){
                     coordX++;
                     coordY--;
+                    direction();
                 } else {
                     direction = slump.nextInt(8) + 1;
                 }
@@ -76,6 +81,7 @@ public class Student {
             case SOUTH:
                 if(checkOutOfBounds(coordX, coordY - 1)){
                     coordY--;
+                    direction();
                 } else {
                     direction = slump.nextInt(8) + 1;
                 }
@@ -85,6 +91,7 @@ public class Student {
                 if(checkOutOfBounds(coordX - 1, coordY - 1)){
                     coordX++;
                     coordY--;
+                    direction();
                 } else {
                     direction = slump.nextInt(8) + 1;
                 }
@@ -93,12 +100,13 @@ public class Student {
             case WEST:
                 if(checkOutOfBounds(coordX, coordY - 1)){
                     coordY--;
+                    direction();
                 } else {
                     direction = slump.nextInt(8) + 1;
                 }
                 break;
         }
-        direction();
+        //direction();
         //direction = slump.nextInt(8) + 1;
     }
 
