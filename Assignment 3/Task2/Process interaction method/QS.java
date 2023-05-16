@@ -21,14 +21,14 @@ class QS extends Proc{
 					int numberOfStudents = (int) students.stream().filter(s -> student.onSameSquare(s) && s.getID() != student.getID()).count();
 					if(numberOfStudents == 1){
 						SignalList.SendSignal(MEET,this, time, student);
-					} else if(numberOfStudents > 1){
+					} /* else if(numberOfStudents > 1){
 						SignalList.SendSignal(WALK,this, time + student.getWalktime(), student);
-					}
+					} */
 
 					SignalList.SendSignal(WALK,this, time + student.getWalktime(), student);
 				} else {
-					student.setEngagedStatus(false);
 					SignalList.SendSignal(WALK,this, time + student.getWalktime() + 60, student);
+					student.setEngagedStatus(false);
 				}
 			} break;
 
@@ -41,14 +41,14 @@ class QS extends Proc{
 						break;
 					}
 				}
-				if(!student.isEngaged()){
+				/* if(!student.isEngaged()){ */
 					student.socialize(otherStudent);
 					SignalList.SendSignal(WALK,this, time + student.getWalktime() + 60, student);
-				} else {
+				/* } else {
 					SignalList.SendSignal(MEET, this, time + student.getWalktime() + 60, student);
 					student.setEngagedStatus(false);
 
-				}
+				} */
 				
 			} break;
 
