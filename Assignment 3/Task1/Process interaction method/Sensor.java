@@ -88,7 +88,7 @@ class Sensor extends Proc{
 				//Check if any sensor within radius r is transimitting signal
 				for (Map.Entry<Sensor, Boolean> s : Gateway.activeSensors.entrySet()) {
 					if(this.checkCollision(s.getKey())) {
-						SignalList.SendSignal(START_REPORT_POST_CHECK, this, this, time + uniformSleep());
+						SignalList.SendSignal(CHECK_CHANNEL, this, this, time + uniformSleep());
 						return;
 					}
 				}
