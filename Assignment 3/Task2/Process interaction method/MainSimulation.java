@@ -31,7 +31,7 @@ public class MainSimulation extends Global{
     	//H�r nedan skickas de f�rsta signalerna f�r att simuleringen ska komma ig�ng.
     	//To start the simulation the first signals are put in the signal list
 
-		while (interval > 100 || stdDev == 0){
+		while (interval > 10 || stdDev == 0){
 			
 			Q1.students.clear();
 			for (int i = 0; i < 20; i++){
@@ -51,12 +51,12 @@ public class MainSimulation extends Global{
 				time = actSignal.arrivalTime;
 				actSignal.destination.TreatSignal(actSignal);
 				// System.out.println("c " + c); 
-				// if (c %10 == 0) {
-				//  	for (Student s : Q1.students){
-				//  		System.out.println(s.getID() + " " + Arrays.toString(s.relationships));
-				//  	}
-				//  }
-				//  c++;
+				//   if (c %10 == 0) {
+				//    	for (Student s : Q1.students){
+				//    		System.out.println(s.getID() + " " + Arrays.toString(s.relationships));
+				//    	}
+				//    }
+				//    c++;
 			}
 			//System.out.print(runs);
 

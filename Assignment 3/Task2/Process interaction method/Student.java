@@ -4,8 +4,8 @@ import java.util.Random;
 public class Student {
 	public static final int NORTHWEST = 1, NORTH = 2, NORTHEAST = 3, EAST = 4, SOUTHEAST = 5, SOUTH = 6, SOUTHWEST = 7, WEST = 8;
 
-    public double coordX;
-    public double coordY;
+    private double coordX;
+    private double coordY;
     public int[] relationships;
     private boolean engaged;
     private Random slump = new Random();
@@ -107,7 +107,7 @@ public class Student {
     }
 
     private boolean checkOutOfBounds(double x, double y){
-        return x < 0 || x > 20 || y < 0 || y > 20;
+        return x < 0.0 || x > 20.0 || y < 0.0 || y > 20.0;
     }
 
 

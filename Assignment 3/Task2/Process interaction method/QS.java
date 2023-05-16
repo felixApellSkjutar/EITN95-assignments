@@ -21,19 +21,14 @@ class QS extends Proc{
 					// Check number of students on that square
 					int numberOfStudents = (int) students.stream().filter(s -> student.onSameSquare(s) && s.getID() != student.getID()).count();
 					if(numberOfStudents == 1){
-						SignalList.SendSignal(MEET,this, time, student);
-					} /* else if(numberOfStudents > 1){
-						SignalList.SendSignal(WALK,this, time + student.getWalktime(), student);
-					} */
+						SignalList.SendSignal(MEET, this, time, student);
+					} 
 					else {
 						SignalList.SendSignal(WALK,this, time + student.getWalktime(), student);
 					}
 
 				 } 
-				//  else {
-				// 	SignalList.SendSignal(WALK,this, time + student.getWalktime() + 60, student);
-				// 	student.setEngagedStatus(false);
-				//  }
+
 			} break;
 
 			case STOP_ENGAGE:
