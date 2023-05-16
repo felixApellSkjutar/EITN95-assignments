@@ -20,7 +20,7 @@ public class MainSimulation2 extends Global{
 		// Read config file
 		Properties config = new Properties();
         try {
-			String path = "config_3000"; // Choose config file to run
+			String path = "config_1000"; // Choose config file to run
             FileInputStream fis = new FileInputStream(path);
             config.load(fis);
             fis.close();
@@ -31,7 +31,7 @@ public class MainSimulation2 extends Global{
         double ts = Double.parseDouble(config.getProperty("ts")); 	// Sleep interval for the sensors
         double r = Double.parseDouble(config.getProperty("r")); 	// Radius where transmissions can collide
 		
-		double lb = 10, ub = 50;
+		double lb = 4000, ub = 5000;
 
 		Sensor2[] sensor_nodes = new Sensor2[n];
 		for (int i = 0; i < n; i++) {
