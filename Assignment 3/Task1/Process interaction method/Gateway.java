@@ -3,23 +3,13 @@ import java.io.*;
 
 class Gateway extends Proc{
 
-	public HashMap<Sensor, Boolean> activeSensors = new HashMap<Sensor, Boolean>();
+	public static HashMap<Sensor, Boolean> activeSensors = new HashMap<Sensor, Boolean>();
 	public List<Double> packetLosses = new ArrayList<Double>();
 
 	public int totalSignals, successfulSignals, failedSignals, noMeasurements;
 	public Proc sendTo;
 	Random rand = new Random();
 	public double confidenceInterval = 1.0;
-
-	public boolean checkCollision(Sensor s1, Sensor s2) {
-		double xDiff = Math.pow(s1.getX() - s2.getX(),2);
-		double yDiff = Math.pow(s1.getY() - s2.getY(), 2);
-		
-		if (Math.sqrt(xDiff + yDiff) < s1.getRadius()) {
-			return true;
-		}
-		return false;
-	}
 
 	public double confidenceInterval(List<Double> list) {
 		int N = list.size();
@@ -45,10 +35,6 @@ class Gateway extends Proc{
 			case RECIEVE_SIGNAL:{
 				boolean collides = activeSensors.remove((Sensor) x.origin);
 				for (Map.Entry<Sensor, Boolean> s: activeSensors.entrySet()) {
-					// if (checkCollision(s.getKey(), (Sensor) x.origin)) {
-					// 	s.setValue(true);
-					// 	collides = true;
-					// }
 					s.setValue(true);
 					collides = true;
 				}

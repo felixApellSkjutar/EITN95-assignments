@@ -8,8 +8,8 @@
      public static void main(String[] args) throws IOException {
 		
  		// Here the gateway instance is created
- 		Gateway Gateway = new Gateway();
- 		Gateway.sendTo = null;
+ 		Gateway gateway = new Gateway();
+ 		gateway.sendTo = null;
 
  		// The signal list is started and actSignal is declared. actSignal is the latest signal that has been fetched from the 
  		// signal list in the main loop below.
@@ -19,7 +19,7 @@
  		// Read config file
  		Properties config = new Properties();
          try {
- 			String path = "config_1000"; // Choose config file to run
+ 			String path = "config_5000"; // Choose config file to run
              FileInputStream fis = new FileInputStream(path);
              config.load(fis);
              fis.close();
@@ -30,11 +30,15 @@
          double ts = Double.parseDouble(config.getProperty("ts")); 	// Sleep interval for the sensors
          double r = Double.parseDouble(config.getProperty("r")); 	// Radius where transmissions can collide
 		
+		 double lb = 20, ub =100;//Used for strategy 2 in exercise c and d
+
  		Sensor[] sensor_nodes = new Sensor[n];
  		for (int i = 0; i < n; i++) {
  			String[] point = config.getProperty("point_" + Integer.toString(i)).split(" ");
- 			Sensor sensor_node = new Sensor(Double.parseDouble(point[0]), Double.parseDouble(point[1]), r, ts, Tp, Gateway);
+ 			Sensor sensor_node = new Sensor(Double.parseDouble(point[0]), Double.parseDouble(point[1]), r, ts, Tp, gateway);
+ 			//Sensor sensor_node = new Sensor(Double.parseDouble(point[0]), Double.parseDouble(point[1]), r, ts, Tp, gateway, lb, ub);
  			SignalList.SendSignal(START_REPORT, null, sensor_node, time + sensor_node.getExpDist());
+ 			//SignalList.SendSignal(CHECK_CHANNEL, null, sensor_node, time + sensor_node.getExpDist());
  			sensor_nodes[i] = sensor_node;
  		}
 		
@@ -44,7 +48,7 @@
  		System.out.println("radius = " + r);
 		
     	//To start the simulation the first signals are put in the signal list
-    	SignalList.SendSignal(MEASURE, null, Gateway, time + 10);
+    	SignalList.SendSignal(MEASURE, null, gateway, time + 10);
 
     	// This is the main loop
     	while (time < 20000){
@@ -54,18 +58,18 @@
     	}
 
      	//The result of the simulation is printed below:
- 		System.out.println("Number of total signals going through the network: " + Gateway.totalSignals);
- 		System.out.println("Number of succesful signals going through the network: " + Gateway.successfulSignals);
- 		System.out.println("Number of failed signals going through the network: " + Gateway.failedSignals);
- 		System.out.println("Arrival rate: " + 1.0*Gateway.totalSignals/time);
-     	System.out.println("Calculated throughput: " + 1.0*Gateway.successfulSignals/time);
+ 		System.out.println("Number of total signals going through the network: " + gateway.totalSignals);
+ 		System.out.println("Number of succesful signals going through the network: " + gateway.successfulSignals);
+ 		System.out.println("Number of failed signals going through the network: " + gateway.failedSignals);
+ 		System.out.println("Arrival rate: " + 1.0*gateway.totalSignals/time);
+     	System.out.println("Calculated throughput: " + 1.0*gateway.successfulSignals/time);
 		
-		double lambda_p = (1.0*Gateway.totalSignals/time);
+		double lambda_p = (1.0*gateway.totalSignals/time);
 		double T_put = lambda_p * Math.exp(-2*lambda_p);
-		double packetLoss = 1.0*Gateway.failedSignals/Gateway.totalSignals;
+		double packetLoss = 1.0*gateway.failedSignals/gateway.totalSignals;
     	System.out.println("Throughput: " + T_put);
 		System.out.println("Packet loss: " + packetLoss);
-		System.out.println("Confidence interval: " + Gateway.confidenceInterval);
+		System.out.println("Confidence interval: " + gateway.confidenceInterval);
 
     }
 }
