@@ -1,5 +1,4 @@
  import java.util.*;
- import java.util.stream.Collectors;
  import java.io.*;
 
  //It inherits Proc so that we can use time and the signal names without dot notation
@@ -20,7 +19,7 @@
  		// Read config file
  		Properties config = new Properties();
          try {
- 			String path = "config_4000"; // Choose config file to run
+ 			String path = "config_1000"; // Choose config file to run
              FileInputStream fis = new FileInputStream(path);
              config.load(fis);
              fis.close();
@@ -48,7 +47,7 @@
     	SignalList.SendSignal(MEASURE, null, Gateway, time + 10);
 
     	// This is the main loop
-    	while (time < 50000){
+    	while (time < 20000){
     		actSignal = SignalList.FetchSignal();
     		time = actSignal.arrivalTime;
     		actSignal.destination.TreatSignal(actSignal);
@@ -66,19 +65,7 @@
 		double packetLoss = 1.0*Gateway.failedSignals/Gateway.totalSignals;
     	System.out.println("Throughput: " + T_put);
 		System.out.println("Packet loss: " + packetLoss);
-		System.out.println("Confidence interval: " + confidenceInterval(Gateway.packetLosses));
+		System.out.println("Confidence interval: " + Gateway.confidenceInterval);
 
     }
-
-	private static double confidenceInterval(List<Double> list) {
-		int N = list.size();
-		double mean = list.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
-		double var = 0.0;
-		for (double d : list) {
-			var += Math.pow(d - mean, 2);
-		}
-		var = var / N;
-		double std = Math.sqrt(var);
-		return 1.96 * (std / Math.sqrt(N));
-	}
 }

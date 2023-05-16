@@ -9,6 +9,7 @@ class Gateway extends Proc{
 	public int totalSignals, successfulSignals, failedSignals, noMeasurements;
 	public Proc sendTo;
 	Random rand = new Random();
+	public double confidenceInterval = 1.0;
 
 	public boolean checkCollision(Sensor s1, Sensor s2) {
 		double xDiff = Math.pow(s1.getX() - s2.getX(),2);
@@ -18,6 +19,18 @@ class Gateway extends Proc{
 			return true;
 		}
 		return false;
+	}
+
+	public double confidenceInterval(List<Double> list) {
+		int N = list.size();
+		double mean = list.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
+		double var = 0.0;
+		for (double d : list) {
+			var += Math.pow(d - mean, 2);
+		}
+		var = var / N;
+		double std = Math.sqrt(var);
+		return 1.96 * (std / Math.sqrt(N));
 	}
 
 	public void TreatSignal(Signal x){
@@ -50,6 +63,7 @@ class Gateway extends Proc{
 				noMeasurements++;
 				double packetLoss = 1.0*failedSignals / totalSignals;
 				packetLosses.add(packetLoss);
+				confidenceInterval = confidenceInterval(packetLosses);
 				SignalList.SendSignal(MEASURE, this, this, time + 2*rand.nextDouble());
 			} break;
 		}
