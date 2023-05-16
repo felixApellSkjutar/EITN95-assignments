@@ -4,12 +4,12 @@ import java.util.Random;
 public class Student {
 	public static final int NORTHWEST = 1, NORTH = 2, NORTHEAST = 3, EAST = 4, SOUTHEAST = 5, SOUTH = 6, SOUTHWEST = 7, WEST = 8;
 
-    public double coordX;
-    public double coordY;
+    private double coordX;
+    private double coordY;
     private int[] relationships;
     private boolean engaged;
     private Random slump = new Random();
-    public int speed = 4; // changes in tasks, 2, 4, slump.nextInt(7) + 1;
+    public int speed = 4*60; // changes in tasks, 2, 4, slump.nextInt(7) + 1;
     private double walkTimeStraight = 1.0/speed;
     private double walkTimeDiagonal = 1.0*Math.sqrt(2)/speed;
     private int id;
@@ -32,7 +32,7 @@ public class Student {
         //engaged = false;
         switch (direction){
             case NORTHWEST:
-                if(!checkOutOfBounds(coordX - 1, coordY + 1)){
+                if(checkOutOfBounds(coordX - 1, coordY + 1)){
                     coordX--;
                     coordY++;
                 } else {
@@ -40,7 +40,7 @@ public class Student {
                 }
                 break;
             case NORTH:
-                if(!checkOutOfBounds(coordX, coordY + 1)){
+                if(checkOutOfBounds(coordX, coordY + 1)){
                     coordY++;
                 } else {
                     direction = slump.nextInt(8) + 1;
@@ -48,7 +48,7 @@ public class Student {
                 break;
 
             case NORTHEAST:
-                if(!checkOutOfBounds(coordX + 1, coordY + 1)){
+                if(checkOutOfBounds(coordX + 1, coordY + 1)){
                     coordX++;
                     coordY++;
                 } else {
@@ -57,7 +57,7 @@ public class Student {
                 break;
 
             case EAST:
-                if(!checkOutOfBounds(coordX + 1, coordY)){
+                if(checkOutOfBounds(coordX + 1, coordY)){
                     coordX++;
                 } else {
                     direction = slump.nextInt(8) + 1;
@@ -65,7 +65,7 @@ public class Student {
                 break;
 
             case SOUTHEAST:
-                if(!checkOutOfBounds(coordX + 1, coordY - 1)){
+                if(checkOutOfBounds(coordX + 1, coordY - 1)){
                     coordX++;
                     coordY--;
                 } else {
@@ -74,7 +74,7 @@ public class Student {
                 break;
 
             case SOUTH:
-                if(!checkOutOfBounds(coordX, coordY - 1)){
+                if(checkOutOfBounds(coordX, coordY - 1)){
                     coordY--;
                 } else {
                     direction = slump.nextInt(8) + 1;
@@ -82,7 +82,7 @@ public class Student {
                 break;
             
             case SOUTHWEST:
-                if(!checkOutOfBounds(coordX - 1, coordY - 1)){
+                if(checkOutOfBounds(coordX - 1, coordY - 1)){
                     coordX++;
                     coordY--;
                 } else {
@@ -91,7 +91,7 @@ public class Student {
                 break;
 
             case WEST:
-                if(!checkOutOfBounds(coordX, coordY - 1)){
+                if(checkOutOfBounds(coordX, coordY - 1)){
                     coordY--;
                 } else {
                     direction = slump.nextInt(8) + 1;
@@ -106,11 +106,11 @@ public class Student {
         //System.out.println("student" + id);
         //System.out.println("otherstudent" + otherStudent.getID());
         engaged = true;
-        //otherStudent.engaged = true;
+        otherStudent.engaged = true;
         relationships[otherStudent.getID()]++;
         //System.out.println("relation till other " + relationships[otherStudent.getID()]);
 
-        //otherStudent.relationships[id]++;
+        otherStudent.relationships[id]++;
     }
 
     public double getWalktime(){
@@ -137,8 +137,7 @@ public class Student {
     }
 
     private boolean checkOutOfBounds(double x, double y){
-        return x < 0.0 || x > 20.0 || y < 0.0 || y > 20.0;
-        
+        return (x > -1 && y > -1) && (x < 40 && y < 40);
     }
 
     private void direction(){
@@ -151,7 +150,7 @@ public class Student {
 
     public boolean finished() {
         //System.out.println(id + "s relation");
-        System.out.println(Arrays.toString(relationships));
+        //System.out.println(Arrays.toString(relationships));
         //System.out.println(engaged);
         
         for(int i = 0; i < relationships.length; i++){

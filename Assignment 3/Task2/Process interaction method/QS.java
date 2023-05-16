@@ -22,13 +22,13 @@ class QS extends Proc{
 					if(numberOfStudents == 1){
 						SignalList.SendSignal(MEET,this, time, student);
 					} else if(numberOfStudents > 1){
-						SignalList.SendSignal(WALK,this, time + student.getWalktime(), student);
+						SignalList.SendSignal(WALK,this, time, student);
 					}
 
 					SignalList.SendSignal(WALK,this, time + student.getWalktime(), student);
 				} else {
 					student.setEngagedStatus(false);
-					SignalList.SendSignal(WALK,this, time + student.getWalktime() + 60, student);
+					SignalList.SendSignal(WALK,this, time + student.getWalktime() + 1, student);
 				}
 			} break;
 
@@ -43,9 +43,9 @@ class QS extends Proc{
 				}
 				if(!student.isEngaged()){
 					student.socialize(otherStudent);
-					SignalList.SendSignal(WALK,this, time + student.getWalktime() + 60, student);
+					SignalList.SendSignal(WALK,this, time + student.getWalktime() + 1, student);
 				} else {
-					SignalList.SendSignal(MEET, this, time + student.getWalktime() + 60, student);
+					SignalList.SendSignal(MEET, this, time + student.getWalktime() + 1, student);
 					student.setEngagedStatus(false);
 
 				}
@@ -56,10 +56,9 @@ class QS extends Proc{
 	}
 
 	public boolean finished(){
-		/* for(Student s : students){
-			System.out.println(s.getID() + " " + s.coordX + " " + s.coordY);
+		for(Student s : students){
+			System.out.println();
 		}
-		System.out.println("========="); */
 		for (Student s : students){
 			if(!s.finished()){
 				return false;
