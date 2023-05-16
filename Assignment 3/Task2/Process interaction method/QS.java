@@ -69,10 +69,9 @@ class QS extends Proc{
 	}
 
 	public boolean finished(){
-		/* for(Student s : students){
-			System.out.println(s.getID() + " " + s.coordX + " " + s.coordY);
+		for(Student s : students){
+			System.out.println();
 		}
-		System.out.println("========="); */
 		for (Student s : students){
 			if(!s.finished()){
 				return false;

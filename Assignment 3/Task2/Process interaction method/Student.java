@@ -107,8 +107,7 @@ public class Student {
     }
 
     private boolean checkOutOfBounds(double x, double y){
-        return x < 0.0 || x > 20.0 || y < 0.0 || y > 20.0;
-        
+        return x < 0 || x > 20 || y < 0 || y > 20;
     }
 
 
