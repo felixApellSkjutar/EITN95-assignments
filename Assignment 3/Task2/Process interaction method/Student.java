@@ -16,7 +16,6 @@ public class Student {
     private int direction;
     private int tilesTilDirectionChange;
 
-
     public Student(int id){
         this.coordX = 0.5 + slump.nextInt(20); //centering mid in square
         this.coordY = 0.5 + slump.nextInt(20);
@@ -25,7 +24,6 @@ public class Student {
         this.tilesTilDirectionChange = slump.nextInt(10) + 1;
         this.relationships = new int[20];
         this.engaged = false;
-
     }
 
     private void setNewDirection(){
@@ -58,7 +56,6 @@ public class Student {
         return checkOutOfBounds(coordX + nextStep[0], coordY + nextStep[1]);
     }
 
-
     public void walk(){
         this.tilesTilDirectionChange--;
         if(outOfBounds(this.direction) || this.tilesTilDirectionChange == 0) {
@@ -71,16 +68,9 @@ public class Student {
         }
     }
 
-
     public void socialize(Student otherStudent){
-        //System.out.println("student" + id);
-        //System.out.println("otherstudent" + otherStudent.getID());
         engaged = true;
-        //otherStudent.engaged = true;
         relationships[otherStudent.getID()]++;
-        //System.out.println("relation till other " + relationships[otherStudent.getID()]);
-
-        //otherStudent.relationships[id]++;
     }
 
     public double getWalktime(){
@@ -110,18 +100,12 @@ public class Student {
         return x < 0.0 || x > 20.0 || y < 0.0 || y > 20.0;
     }
 
-
     public boolean finished() {
-        //System.out.println(id + "s relation");
-        //System.out.println(Arrays.toString(relationships));
-        //System.out.println(engaged);
-        
         for(int i = 0; i < relationships.length; i++){
             if(relationships[i] == 0 && i != id){
                 return false;
             }
         }
-//        System.out.println(id + " är klar");
         return true;
     }
 }

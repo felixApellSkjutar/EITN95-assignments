@@ -15,9 +15,7 @@ class QS extends Proc{
 
 			case WALK:{
 				 if (!student.isEngaged()){
-
 					student.walk();
-					
 					// Check number of students on that square
 					int numberOfStudents = (int) students.stream().filter(s -> student.onSameSquare(s) && s.getID() != student.getID()).count();
 					if(numberOfStudents == 1){
@@ -26,16 +24,13 @@ class QS extends Proc{
 					else {
 						SignalList.SendSignal(WALK,this, time + student.getWalktime(), student);
 					}
-
 				 } 
-
 			} break;
 
-			case STOP_ENGAGE:
+			case STOP_ENGAGE:{
 				student.setEngagedStatus(false);
 				SignalList.SendSignal(WALK, this, time + student.getWalktime(), student);
-				break;
-
+			} break;
 			
 			case MEET:{
 				Student otherStudent = null;
@@ -45,19 +40,10 @@ class QS extends Proc{
 						break;
 					}
 				}
-				/* if(!student.isEngaged()){ */
-					student.socialize(otherStudent);
-					otherStudent.socialize(student);
-//					SignalList.SendSignal(WALK,this, time + student.getWalktime() + 60, student);					SignalList.SendSignal(WALK,this, time + student.getWalktime() + 60, student);
-//					SignalList.SendSignal(WALK,this, time + otherStudent.getWalktime() + 60, otherStudent);					SignalList.SendSignal(WALK,this, time + otherStudent.getWalktime() + 60, otherStudent);
-					SignalList.SendSignal(STOP_ENGAGE, this, time + 60, otherStudent);
-					SignalList.SendSignal(STOP_ENGAGE, this, time + 60, student);
-				/* } else {
-					SignalList.SendSignal(MEET, this, time + student.getWalktime() + 60, student);
-					student.setEngagedStatus(false);
-
-				} */
-				
+				student.socialize(otherStudent);
+				otherStudent.socialize(student);
+				SignalList.SendSignal(STOP_ENGAGE, this, time + 60, otherStudent);
+				SignalList.SendSignal(STOP_ENGAGE, this, time + 60, student);
 			} break;
 
 		}
