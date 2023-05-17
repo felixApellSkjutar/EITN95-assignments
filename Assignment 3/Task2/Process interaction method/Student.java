@@ -9,7 +9,7 @@ public class Student {
     public int[] relationships;
     private boolean engaged;
     private Random slump = new Random();
-    public int speed = 4;//slump.nextInt(7) + 1; //4; // changes in tasks, 2, 4, slump.nextInt(7) + 1;
+    public int speed = slump.nextInt(7) + 1;//slump.nextInt(7) + 1; //4; // changes in tasks, 2, 4, slump.nextInt(7) + 1;
     private double walkTimeStraight = 1.0/speed;
     private double walkTimeDiagonal = 1.0*Math.sqrt(2)/speed;
     private int id;

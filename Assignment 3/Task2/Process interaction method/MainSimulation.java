@@ -7,15 +7,15 @@ import java.io.*;
 
 public class MainSimulation extends Global{
 
-    public static void main(String[] args) throws IOException {
-
-    	//Signallistan startas och actSignal deklareras. actSignal �r den senast utplockade signalen i huvudloopen nedan.
+	public static void main(String[] args) throws IOException {
+		
+		//Signallistan startas och actSignal deklareras. actSignal �r den senast utplockade signalen i huvudloopen nedan.
     	// The signal list is started and actSignal is declaree. actSignal is the latest signal that has been fetched from the 
     	// signal list in the main loop below.
-
+		
+		int runs = 0;
     	Signal actSignal;
     	new SignalList();
-		int runs = 0;
 		double totalTime = 0;
 		ArrayList<Double> times = new ArrayList<>();
 		double mean = 0.0;  
@@ -31,7 +31,10 @@ public class MainSimulation extends Global{
     	//H�r nedan skickas de f�rsta signalerna f�r att simuleringen ska komma ig�ng.
     	//To start the simulation the first signals are put in the signal list
 
-		while (interval > 10 || stdDev == 0){
+
+		HashMap<Integer, Integer> studentAssociations = new HashMap<>();
+
+		while (runs < 1000){
 			
 			Q1.students.clear();
 			for (int i = 0; i < 20; i++){
@@ -45,7 +48,7 @@ public class MainSimulation extends Global{
 			// Detta �r simuleringsloopen:
 			// This is the main loop
 
-			 int c = 0;
+			//int c = 0;
 			while (!Q1.finished()){
 				actSignal = SignalList.FetchSignal();
 				time = actSignal.arrivalTime;
@@ -58,45 +61,65 @@ public class MainSimulation extends Global{
 				//    }
 				//    c++;
 			}
-			//System.out.print(runs);
+			
+			//PLocka ut alla tider som studenter spenderat med andra studenter
+			//När vi gjort alla simuleringar så kan vi räkna ut medelvärde och standardavvikelse
+
+
+			for (Student s : Q1.students){
+				for (int i : s.relationships) {
+					if (i != 0) {
+						if (studentAssociations.containsKey(i)){
+							studentAssociations.put(i, studentAssociations.get(i) + 1);
+						} else {
+							studentAssociations.put(i, 1);
+						}
+					}
+				}
+			}
 
 			runs++;
-			totalTime += time;
-			times.add(time);
+			// totalTime += time;
+			// times.add(time);
 
-			mean = totalTime/runs;
+			// mean = totalTime/runs;
 
-			//System.out.print("\tmean: " + (mean/60.0));
 
-			// Standard deviation
-			double variance = 0.0;
-			stdDev = 0.0;
+			// // Standard deviation
+			// double variance = 0.0;
+			// stdDev = 0.0;
 
-			for (double t : times){
-				variance += Math.pow(t-mean, 2); 
-			}
-			variance = variance/runs;
+			// for (double t : times){
+			// 	variance += Math.pow(t-mean, 2); 
+			// }
+			// variance = variance/runs;
 
-			stdDev = Math.sqrt(variance);
-			//System.out.print("\tstdDev: " + (stdDev/60.0));
+			// stdDev = Math.sqrt(variance);
 
-			// with z-distribution
-			interval = 1.960*stdDev/Math.sqrt(runs);
-			//System.out.print("\tinterval: " + (interval/60.0) + "\n");
+
+			// // with z-distribution
+			// interval = 1.960*stdDev/Math.sqrt(runs);
+
 			time = 0;
 
-			System.out.println("runs: " + runs + " mean: " + mean + " stdDev: " + stdDev + " interval: " + interval);
+			// System.out.println("runs: " + runs + " mean: " + mean + " stdDev: " + stdDev + " interval: " + interval);
+			// System.out.println("studentAssocisatiions: " + studentAssociations);
     	}
 
     	//Slutligen skrivs resultatet av simuleringen ut nedan:
     	//Finally the result of the simulation is printed below:
 
-    	
-		System.out.println(runs);
-		System.out.println("stdDev: " + stdDev);
-		System.out.println("interval: " + interval);
+		PrintWriter writer = new PrintWriter("output.txt", "UTF-8");
+    	for(int i = 1; i < studentAssociations.size(); i++){
+			writer.println(i + " " + studentAssociations.get(i));
+		}
+		writer.close();
+
+//		System.out.println(studentAssociations);
+		// System.out.println("stdDev: " + stdDev);
+		// System.out.println("interval: " + interval);
 
 
-		System.out.println("mean: " + mean);
+		// System.out.println("mean: " + mean);
     }
 }
